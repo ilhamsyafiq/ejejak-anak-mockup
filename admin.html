@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="ms">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Panel Doktor — e-Jejak Anak</title>
+  <meta name="description" content="Panel doktor: keputusan saringan yang dihantar & hubungi ibu bapa.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="admin" data-auth="admin">
+
+  <!-- Header khas panel doktor -->
+  <nav class="nav" aria-label="Navigasi panel doktor">
+    <div class="container">
+      <a class="brand" href="admin.html">
+        <span class="brand__mark"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8.5 2C6.9 2 6 3.7 6 6c0 2 .8 3.6 2 4.3.9.5 1.9 0 2.2-1 .3-1 .4-2.4.3-3.8C10.4 3.5 9.9 2 8.5 2Zm-3 10.5c-1.3 0-2.3 1.1-2.3 2.6 0 1.2.5 2.3 1.4 3.4.7.9 2 .8 2.6-.2.5-.9.6-2 .5-3.2-.1-1.4-.8-2.6-2.2-2.6Zm10-10.5c1.6 0 2.5 1.7 2.5 4 0 2-.8 3.6-2 4.3-.9.5-1.9 0-2.2-1-.3-1-.4-2.4-.3-3.8C13.6 3.5 14.1 2 15.5 2Zm3 10.5c1.3 0 2.3 1.1 2.3 2.6 0 1.2-.5 2.3-1.4 3.4-.7.9-2 .8-2.6-.2-.5-.9-.6-2-.5-3.2.1-1.4.8-2.6 2.2-2.6Z"/></svg></span>
+        <span class="brand__text">
+          <span class="brand__name">e-Jejak<b>Anak</b></span>
+          <span class="brand__tag">Panel Doktor / Pentadbir</span>
+        </span>
+      </a>
+      <div class="nav__cta">
+        <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M4 2v6a5 5 0 0 0 10 0V2"/><path d="M4 2H2M14 2h-2M9 15v2a5 5 0 0 0 10 0v-3"/><circle cx="20" cy="11" r="2"/></svg> <span id="doctor-name">Doktor</span></span>
+        <a class="btn btn--ghost" href="#" id="logout"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg> Log Keluar</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="page-head">
+    <div class="container">
+      <nav class="breadcrumb"><a href="index.html">Beranda</a> / <span>Panel Doktor / Pentadbir</span></nav>
+      <h1>Panel Doktor &amp; Pentadbir</h1>
+      <p>Semak keputusan saringan, urus soalan &amp; artikel, pantau statistik dan jana laporan pengguna.</p>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="container" data-tabs>
+
+      <!-- Tab navigasi (Modul 6 + doktor) -->
+      <div class="tabs" role="tablist">
+        <button class="tab is-active" data-target="tab-saringan" data-roles="doctor">Keputusan Saringan</button>
+        <button class="tab" data-target="tab-statistik" data-roles="superadmin,admin,doctor">Statistik Penggunaan</button>
+        <button class="tab" data-target="tab-soalan" data-roles="doctor">Urus Soalan &amp; Domain</button>
+        <button class="tab" data-target="tab-artikel" data-roles="superadmin,admin">Urus Artikel</button>
+        <button class="tab" data-target="tab-laporan" data-roles="superadmin,admin">Laporan Pengguna</button>
+        <button class="tab" data-target="tab-log" data-roles="superadmin,admin">Log Aktiviti</button>
+        <button class="tab" data-target="tab-akaun" data-roles="superadmin,admin,doctor">Profil &amp; Akaun</button>
+      </div>
+
+      <!-- ===== TAB 1: KEPUTUSAN SARINGAN (doktor) ===== -->
+      <section class="tab-panel is-active" id="tab-saringan">
+        <div class="grid grid-3" style="margin-bottom:var(--sp-5)">
+          <div class="card"><div class="mini-stat"><b class="tnum" id="st-total">0</b><span>Jumlah saringan diterima</span></div></div>
+          <div class="card"><div class="mini-stat"><b class="tnum" id="st-baharu">0</b><span>Baharu (belum dihubungi)</span></div></div>
+          <div class="card" style="border-color:color-mix(in srgb, var(--danger) 30%, var(--line))"><div class="mini-stat"><b class="tnum" id="st-rujukan" style="color:var(--danger)">0</b><span>Perlu rujukan</span></div></div>
+        </div>
+        <div class="flex gap-3 wrap" style="margin-bottom:var(--sp-4); align-items:end">
+          <div class="field" style="margin:0; flex:1; min-width:220px">
+            <label for="sub-search">Cari</label>
+            <input class="input" id="sub-search" type="search" placeholder="Nama anak atau ibu bapa…">
+          </div>
+          <div class="field" style="margin:0; min-width:180px">
+            <label for="sub-triage">Triage</label>
+            <select class="select" id="sub-triage">
+              <option value="semua">Semua Triage</option>
+              <option value="ok">Pemantauan</option>
+              <option value="warn">Perhatian</option>
+              <option value="ref">Perlu Rujukan</option>
+            </select>
+          </div>
+          <div class="field" style="margin:0; min-width:170px">
+            <label for="sub-status">Status</label>
+            <select class="select" id="sub-status">
+              <option value="semua">Semua Status</option>
+              <option value="baharu">Baharu</option>
+              <option value="dihubungi">Dihubungi</option>
+            </select>
+          </div>
+        </div>
+        <p class="muted" id="sub-count" style="font-size:var(--fs-sm); margin:0 0 var(--sp-3)"></p>
+        <div class="table-wrap">
+          <table class="data">
+            <thead><tr><th>Anak</th><th>Ibu Bapa</th><th>Tarikh Hantar</th><th>Markah &amp; Triage</th><th>Status</th><th>Tindakan</th></tr></thead>
+            <tbody id="sub-rows"></tbody>
+          </table>
+        </div>
+        <p class="muted mt-4" style="font-size:var(--fs-xs); max-width:75ch">
+          <strong>Triage:</strong> <span class="triage triage--ok"><span class="tdot"></span>Pemantauan</span> = semua kemahiran dicapai ·
+          <span class="triage triage--warn"><span class="tdot"></span>Perhatian</span> = ≥70% dicapai ·
+          <span class="triage triage--ref"><span class="tdot"></span>Perlu Rujukan</span> = &lt;70% dicapai.
+        </p>
+      </section>
+
+      <!-- ===== TAB 2: STATISTIK PENGGUNAAN (Modul 6) ===== -->
+      <section class="tab-panel" id="tab-statistik">
+        <div class="section-head" style="margin-bottom:var(--sp-4)">
+          <h2>Statistik Penggunaan</h2>
+        </div>
+        <div class="grid grid-3" id="stat-cards" style="margin-bottom:var(--sp-5)"></div>
+
+        <div class="grid grid-2" style="margin-bottom:var(--sp-5)">
+          <div class="card">
+            <h3>Trend Saringan Mengikut Bulan</h3>
+            <p class="muted" style="font-size:var(--fs-sm)">Bilangan sesi saringan dihantar bagi 6 bulan terakhir.</p>
+            <canvas id="chart-trend" class="chart" height="220"></canvas>
+          </div>
+          <div class="card">
+            <h3>Taburan Triage</h3>
+            <p class="muted" style="font-size:var(--fs-sm)">Pecahan keputusan mengikut kategori tindakan doktor.</p>
+            <canvas id="chart-triage" class="chart" height="220"></canvas>
+            <div id="triage-legend" class="chart-legend"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Purata Pencapaian Mengikut Domain</h3>
+          <p class="muted" style="font-size:var(--fs-sm)">Merentas semua saringan yang direkodkan.</p>
+          <div class="domain-scores mt-4" id="stat-domains"></div>
+        </div>
+      </section>
+
+      <!-- ===== TAB 3: URUS SOALAN & DOMAIN (Modul 6: Tambah soalan) ===== -->
+      <section class="tab-panel" id="tab-soalan">
+        <div class="section-head" style="margin-bottom:var(--sp-4)">
+          <h2>Urus Soalan &amp; Domain</h2>
+          <p class="lead" style="font-size:var(--fs-md)">Tambah / padam soalan pada mana-mana domain, atau cipta domain perkembangan baharu. Perubahan terus muncul dalam saringan ibu bapa.</p>
+        </div>
+
+        <!-- Ringkasan bilangan soalan mengikut kumpulan umur -->
+        <div class="card" style="margin-bottom:var(--sp-5)">
+          <h3 style="margin-bottom:4px">Bilangan Soalan Mengikut Kumpulan Umur</h3>
+          <p class="muted" style="font-size:var(--fs-sm); margin-bottom:var(--sp-3)">Bilangan soalan berkaitan bagi setiap kumpulan umur & domain (satu soalan boleh merentas beberapa kumpulan). Sel <span style="color:var(--danger); font-weight:700">merah</span> = tiada soalan.</p>
+          <div class="table-wrap">
+            <table class="data" id="coverage-table"></table>
+          </div>
+        </div>
+
+        <!-- Penapis domain & kumpulan umur -->
+        <div class="flex gap-3 wrap" style="margin-bottom:var(--sp-4); align-items:end">
+          <div class="field" style="margin:0; min-width:200px">
+            <label for="filter-domain">Tapis Domain</label>
+            <select class="select" id="filter-domain"></select>
+          </div>
+          <div class="field" style="margin:0; min-width:200px">
+            <label for="filter-band">Tapis Kumpulan Umur</label>
+            <select class="select" id="filter-band"></select>
+          </div>
+        </div>
+
+        <div class="grid grid-2" style="gap:var(--sp-5); align-items:start">
+          <div class="grid" id="domain-list" style="grid-template-columns:1fr; gap:var(--sp-3)"></div>
+          <div class="card">
+            <h3>Tambah Domain Baharu</h3>
+            <form id="add-domain-form">
+              <div class="field"><label for="dom-name">Nama Domain</label><input class="input" id="dom-name" placeholder="cth. Kemahiran Deria" required></div>
+              <div class="field"><label>Warna</label><div class="swatches" id="color-swatches"></div></div>
+              <div class="field"><label>Ikon</label><div class="icon-picks" id="icon-picks"></div></div>
+              <div class="field"><label for="dom-band">Kumpulan Umur (untuk semua soalan domain ini)</label>
+                <select class="select" id="dom-band"></select>
+              </div>
+              <div class="field">
+                <label for="dom-questions">Soalan <span class="muted" style="font-weight:400">(satu baris = satu soalan)</span></label>
+                <textarea class="input" id="dom-questions" rows="4" placeholder="Adakah anak anda bertindak balas terhadap bunyi?&#10;Adakah anak anda mengenali sentuhan?"></textarea>
+              </div>
+              <button class="btn btn--block" type="submit"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg> Tambah Domain</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== TAB 4: URUS ARTIKEL (Modul 6: Kemas kini artikel) ===== -->
+      <section class="tab-panel" id="tab-artikel">
+        <div class="section-head" style="margin-bottom:var(--sp-4)">
+          <h2>Urus Kandungan Pendidikan</h2>
+          <p class="lead" style="font-size:var(--fs-md)">Tambah, sunting, terbit atau padam artikel, tips, aktiviti dan soalan lazim yang dipaparkan di Pusat Pendidikan.</p>
+        </div>
+        <div class="flex gap-2 wrap" style="margin-bottom:var(--sp-4)">
+          <button class="filter-chip is-active" data-artfilter="semua">Semua</button>
+          <button class="filter-chip" data-artfilter="artikel">Artikel</button>
+          <button class="filter-chip" data-artfilter="tips">Tips</button>
+          <button class="filter-chip" data-artfilter="aktiviti">Aktiviti</button>
+          <button class="filter-chip" data-artfilter="faq">Soalan Lazim</button>
+        </div>
+        <div class="grid grid-2" style="gap:var(--sp-5); align-items:start">
+          <div class="grid" id="article-list" style="grid-template-columns:1fr; gap:var(--sp-3)"></div>
+          <div class="card">
+            <h3 id="art-form-title">Tambah Artikel</h3>
+            <form id="article-form">
+              <div class="field"><label for="art-cat">Kategori</label>
+                <select class="select" id="art-cat" required>
+                  <option value="artikel">Artikel</option>
+                  <option value="tips">Tips Keibubapaan</option>
+                  <option value="aktiviti">Aktiviti di Rumah</option>
+                  <option value="faq">Soalan Lazim (FAQ)</option>
+                </select>
+              </div>
+              <div class="field"><label for="art-title">Tajuk / Soalan</label><input class="input" id="art-title" placeholder="Tajuk artikel atau soalan FAQ" required></div>
+              <div class="field"><label for="art-body">Kandungan / Jawapan</label><textarea class="input" id="art-body" rows="5" required></textarea></div>
+              <label class="checkbox" style="margin-bottom:var(--sp-3)"><input type="checkbox" id="art-pub" checked> Terbitkan (papar kepada ibu bapa)</label>
+              <div class="flex gap-2">
+                <button class="btn" type="submit">Simpan</button>
+                <button class="btn btn--ghost" type="button" id="art-reset">Set Semula</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== TAB 5: LAPORAN PENGGUNA (Modul 6: Jana laporan) ===== -->
+      <section class="tab-panel" id="tab-laporan">
+        <div class="flex items-center justify-between wrap gap-3" style="margin-bottom:var(--sp-4)">
+          <div class="section-head" style="margin:0">
+              <h2>Laporan Pengguna</h2>
+          </div>
+          <button class="btn" id="export-csv"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg> Muat Turun CSV</button>
+        </div>
+        <div class="table-wrap">
+          <table class="data">
+            <thead><tr><th>Nama</th><th>E-mel</th><th>Telefon</th><th>Bil. Anak</th><th>Bil. Saringan</th><th>Purata</th><th>Saringan Terakhir</th></tr></thead>
+            <tbody id="report-rows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== TAB: LOG AKTIVITI (audit — superadmin & pentadbir) ===== -->
+      <section class="tab-panel" id="tab-log" data-roles="superadmin,admin">
+        <div class="flex items-center justify-between wrap gap-3" style="margin-bottom:var(--sp-4)">
+          <div class="section-head" style="margin:0">
+            <h2>Log Aktiviti</h2>
+            <p class="lead" style="font-size:var(--fs-md)">Rekod tindakan sensitif untuk akauntabiliti. Pentadbir nampak organisasinya sahaja; superadmin nampak semua. <em>(Demo — data dalam localStorage.)</em></p>
+          </div>
+          <button class="btn btn--ghost" id="audit-refresh"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg> Muat Semula</button>
+        </div>
+        <p class="muted" id="audit-count" style="font-size:var(--fs-sm); margin:0 0 var(--sp-3)"></p>
+        <div class="table-wrap">
+          <table class="data">
+            <thead><tr><th>Tarikh &amp; Masa</th><th>Pelaku</th><th>Tindakan</th><th>Butiran</th></tr></thead>
+            <tbody id="audit-rows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== TAB 6: PROFIL & AKAUN (profil semua staf + urus akaun ikut peranan) ===== -->
+      <section class="tab-panel" id="tab-akaun">
+        <div class="grid grid-2" style="gap:var(--sp-5); align-items:start">
+
+          <!-- Profil saya -->
+          <div>
+            <div class="section-head" style="margin-bottom:var(--sp-4)"><h2>Profil Saya</h2>
+              <p class="lead" style="font-size:var(--fs-md)">Maklumat anda dipaparkan dalam log hubungi & mesej kepada ibu bapa.</p>
+            </div>
+            <div class="card">
+              <form id="profile-form">
+                <div class="field"><label for="pf-name">Nama</label><input class="input" id="pf-name" required></div>
+                <div class="field"><label for="pf-email">E-mel</label><input class="input" id="pf-email" readonly style="background:var(--brand-tint)"></div>
+                <div class="field-row">
+                  <div class="field"><label for="pf-phone">Telefon</label><input class="input" id="pf-phone" placeholder="cth. 04-912 3456"></div>
+                  <div class="field"><label for="pf-jawatan">Jawatan</label><input class="input" id="pf-jawatan" placeholder="cth. Pegawai Perubatan"></div>
+                </div>
+                <div class="field"><label for="pf-org">Organisasi</label>
+                  <select class="select" id="pf-org"><option value="USM">USM</option><option value="MAIK">MAIK</option><option value="Webimpian">Webimpian</option></select>
+                </div>
+                <button class="btn" type="submit">Simpan Profil</button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Urus akaun staf (superadmin & pentadbir sahaja) -->
+          <div data-manage-accounts>
+            <div class="section-head" style="margin-bottom:var(--sp-4)"><h2>Urus Akaun Staf</h2>
+              <p class="lead" style="font-size:var(--fs-md)">Cipta atau padam akaun <strong>Pentadbir</strong> &amp; <strong>Doktor</strong>. Pentadbir hanya nampak &amp; urus akaun dalam <strong>organisasinya</strong>; superadmin urus semua. Staf tidak boleh daftar sendiri (AUTH-05); akaun superadmin dilindungi.</p>
+            </div>
+            <div class="grid" id="admin-list" style="grid-template-columns:1fr; gap:var(--sp-3); margin-bottom:var(--sp-4)"></div>
+            <div class="card">
+              <h3 id="admin-form-title">Tambah Akaun Baharu</h3>
+              <form id="admin-form">
+                <div class="field"><label for="ad-role">Peranan</label>
+                  <select class="select" id="ad-role">
+                    <option value="doctor">Doktor — semak saringan &amp; urus soalan</option>
+                    <option value="admin">Pentadbir — urus akaun &amp; laporan</option>
+                  </select>
+                  <p class="muted" style="font-size:var(--fs-xs); margin:4px 0 0">Pentadbir hanya boleh cipta akaun dalam <strong>organisasinya sendiri</strong> (medan Organisasi dikunci). Superadmin boleh pilih USM/MAIK.</p>
+                </div>
+                <div class="field"><label for="ad-name">Nama</label><input class="input" id="ad-name" placeholder="cth. Dr. Nurul Ain" required></div>
+                <div class="field-row">
+                  <div class="field"><label for="ad-email">E-mel</label><input class="input" type="email" id="ad-email" placeholder="nama@ejejakanak.my" required></div>
+                  <div class="field"><label for="ad-phone">Telefon</label><input class="input" id="ad-phone" placeholder="cth. 04-912 3456"></div>
+                </div>
+                <div class="field-row">
+                  <div class="field"><label for="ad-jawatan">Jawatan</label><input class="input" id="ad-jawatan" placeholder="cth. Pegawai Perubatan"></div>
+                  <div class="field"><label for="ad-org">Organisasi</label>
+                    <select class="select" id="ad-org"><option value="USM">USM</option><option value="MAIK">MAIK</option></select>
+                  </div>
+                </div>
+                <div class="field"><label for="ad-pass">Kata Laluan Sementara</label><input class="input" id="ad-pass" value="demo1234"><span class="muted" id="ad-pass-hint" style="font-size:var(--fs-xs); display:none">Biar kosong untuk kekalkan kata laluan sedia ada.</span></div>
+                <div class="flex gap-2">
+                  <button class="btn" type="submit" id="admin-submit-btn"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg> Cipta Akaun</button>
+                  <button class="btn btn--ghost" type="button" id="admin-cancel" style="display:none">Batal</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Modal hubungi ibu bapa -->
+  <div class="modal-overlay" id="contact-modal" role="dialog" aria-modal="true" aria-labelledby="m-title">
+    <div class="modal">
+      <div class="modal__head">
+        <div>
+          <h3 id="m-title">Hubungi Ibu Bapa</h3>
+          <p id="m-child">—</p>
+        </div>
+        <button class="modal__close" id="m-close" aria-label="Tutup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+      </div>
+      <div class="modal__body">
+        <p style="margin-bottom:6px"><strong id="m-parent">—</strong></p>
+        <p class="muted" id="m-summary" style="font-size:var(--fs-sm); margin-bottom:var(--sp-4)">—</p>
+
+        <div class="contact-actions">
+          <a class="contact-btn" id="m-call" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.5 2.8.6a2 2 0 0 1 1.7 2Z"/></svg> Panggilan</a>
+          <a class="contact-btn wa" id="m-wa" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.5 15.3L2 22l4.8-1.5A10 10 0 1 0 12 2Zm5.4 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.2-.7-2.7-1.1-4.4-3.9-4.5-4.1-.1-.2-1-1.4-1-2.6 0-1.2.6-1.8.9-2.1.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 1.9c.1.2.1.4 0 .5l-.4.5c-.2.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.2.1.4.1.6-.1l.7-.9c.2-.2.4-.2.6-.1l1.8.9c.2.1.4.2.5.3.1.2.1.7-.1 1.3Z"/></svg> WhatsApp</a>
+          <a class="contact-btn" id="m-mail" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg> E-mel</a>
+        </div>
+
+        <div id="m-info" style="margin-bottom:var(--sp-4)"></div>
+
+        <div class="field">
+          <label for="m-note">Nota Doktor (dalaman)</label>
+          <textarea class="input" id="m-note" rows="3" placeholder="cth. Dihubungi 26/7, dijemput ke klinik untuk penilaian lanjut…"></textarea>
+        </div>
+        <button class="btn btn--block" id="m-mark"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Tandakan Sudah Dihubungi &amp; Simpan Nota</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal butiran soalan & jawapan -->
+  <div class="modal-overlay" id="detail-modal" role="dialog" aria-modal="true" aria-labelledby="d-title">
+    <div class="modal" style="max-width:600px">
+      <div class="modal__head">
+        <div>
+          <h3 id="d-title">Butiran Jawapan Saringan</h3>
+          <p id="d-child">—</p>
+        </div>
+        <button class="modal__close" id="d-close" aria-label="Tutup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+      </div>
+      <div class="modal__body" id="d-body" style="max-height:70vh; overflow:auto"></div>
+    </div>
+  </div>
+
+  <!-- Footer ringkas panel staf (bukan footer awam ibu bapa) -->
+  <footer style="background:var(--brand-deep, #0b3540); color:#cfe0e4; padding:var(--sp-4) 0; margin-top:var(--sp-6)">
+    <div class="container flex items-center justify-between wrap gap-3" style="font-size:var(--fs-sm)">
+      <span>© 2026 e-Jejak Anak — Panel Staf (USM · MAIK)</span>
+      <span style="color:#9db6bc">Akses terhad kepada staf yang dibenarkan sahaja.</span>
+    </div>
+  </footer>
+  <script src="assets/js/main.js"></script>
+  <script>
+    // Log keluar doktor (kawalan akses dikendalikan oleh guard() dalam main.js)
+    document.getElementById('logout').addEventListener('click', function (e) {
+      e.preventDefault();
+      sessionStorage.removeItem('ejejak_admin');
+      window.location.href = 'admin-login.html';
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ms">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Daftar Akaun — e-Jejak Anak</title>
+  <meta name="description" content="Daftar akaun ibu bapa e-Jejak Anak secara percuma.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="daftar">
+  <div id="site-header"></div>
+
+  <main class="auth-wrap">
+    <aside class="auth-aside">
+      <span class="eyebrow" style="color:var(--accent)">Mula Percuma</span>
+      <h2>Setiap jejak kecil bermula dengan satu langkah.</h2>
+      <p>Cipta akaun ibu bapa anda dan mulakan saringan perkembangan pertama anak dalam beberapa minit.</p>
+      <ul>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Percuma sepenuhnya, tanpa bayaran</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Tambah seberapa banyak profil anak</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Data peribadi &amp; disulitkan</li>
+      </ul>
+    </aside>
+
+    <div class="auth-main">
+      <div class="auth-card">
+        <h1 style="font-size:var(--fs-xl)">Daftar Akaun</h1>
+        <p class="muted">Pendaftaran diperlukan untuk membuat saringan — kami memerlukan butiran ini untuk menghubungi anda jika perlu.</p>
+        <form class="form-card mt-4" id="register-form">
+          <div class="notice notice--warn" id="reg-msg" style="display:none; margin-bottom:var(--sp-3)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></svg><span></span></div>
+          <div class="field">
+            <label for="reg-name">Nama Penuh</label>
+            <input class="input" type="text" id="reg-name" placeholder="cth. Siti Nurhaliza" required>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="reg-email">Alamat E-mel</label>
+              <input class="input" type="email" id="reg-email" placeholder="nama@contoh.com" required>
+            </div>
+            <div class="field">
+              <label for="reg-phone">No. Telefon</label>
+              <input class="input" type="tel" id="reg-phone" placeholder="cth. 0123456789" required>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="reg-pass">Kata Laluan</label>
+              <input class="input" type="password" id="reg-pass" placeholder="Minimum 8 aksara" minlength="8" required>
+            </div>
+            <div class="field">
+              <label for="reg-pass2">Sahkan Kata Laluan</label>
+              <input class="input" type="password" id="reg-pass2" placeholder="Ulang kata laluan" minlength="8" required>
+            </div>
+          </div>
+          <label class="checkbox" style="margin-bottom:var(--sp-3)"><input type="checkbox" required> Saya bersetuju dengan <a href="#">Terma Penggunaan</a> &amp; <a href="#">Dasar Privasi</a></label>
+          <button class="btn btn--block btn--lg" type="submit">Cipta Akaun</button>
+          <div class="divider-or">atau</div>
+          <p class="center muted" style="margin:0">Sudah ada akaun? <a href="login.html">Log masuk</a></p>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

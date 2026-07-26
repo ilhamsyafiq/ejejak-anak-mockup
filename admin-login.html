@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ms">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Log Masuk Doktor — e-Jejak Anak</title>
+  <meta name="description" content="Log masuk panel doktor / pentadbir e-Jejak Anak.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="admin-login">
+  <div id="site-header"></div>
+
+  <main class="auth-wrap">
+    <aside class="auth-aside" style="background:linear-gradient(160deg,var(--brand-dark),var(--brand-deep))">
+      <span class="eyebrow" style="color:var(--accent)">Panel Doktor / Pentadbir</span>
+      <h2>Semak keputusan saringan &amp; hubungi ibu bapa.</h2>
+      <p>Akaun doktor membolehkan anda menerima keputusan saringan yang dihantar, menilai kes yang memerlukan perhatian, dan menghubungi ibu bapa untuk susulan.</p>
+      <ul>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Triage automatik (Pemantauan / Perhatian / Rujukan)</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Hubungi ibu bapa terus (panggilan / WhatsApp / e-mel)</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Rekod saringan tetamu &amp; pengguna berdaftar</li>
+      </ul>
+    </aside>
+
+    <div class="auth-main">
+      <div class="auth-card">
+        <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M4 2v6a5 5 0 0 0 10 0V2"/><path d="M4 2H2M14 2h-2M9 15v2a5 5 0 0 0 10 0v-3"/><circle cx="20" cy="11" r="2"/></svg> Akses Doktor</span>
+        <h1 class="mt-3" style="font-size:var(--fs-xl)">Log Masuk Doktor</h1>
+        <p class="muted">Akaun doktor dicipta oleh pentadbir sistem — tiada pendaftaran sendiri.</p>
+        <form class="form-card mt-4" id="admin-login-form">
+          <div class="notice notice--warn" id="admin-msg" style="display:none; margin-bottom:var(--sp-3)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></svg><span></span></div>
+          <div class="field">
+            <label for="admin-email">E-mel Rasmi</label>
+            <input class="input" type="email" id="admin-email" placeholder="doktor@klinik.gov.my" value="doktor@ejejakanak.my" required>
+          </div>
+          <div class="field">
+            <label for="admin-pass">Kata Laluan</label>
+            <input class="input" type="password" id="admin-pass" placeholder="••••••••" value="demo1234" required>
+          </div>
+          <button class="btn btn--block btn--lg" type="submit">Log Masuk ke Panel</button>
+          <p class="center muted mt-3" style="margin:0"><a href="index.html">← Kembali ke laman utama</a></p>
+        </form>
+        <div class="muted center mt-3" style="font-size:var(--fs-xs); line-height:1.7">Akaun demo (kata laluan <strong>demo1234</strong>):<br>
+          <strong>superadmin@webimpian.com</strong> — Superadmin (Webimpian)<br>
+          <strong>admin@ejejakanak.my</strong> — Pentadbir (MAIK)<br>
+          <strong>doktor@ejejakanak.my</strong> — Doktor (USM, sudah diisi)</div>
+      </div>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

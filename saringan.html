@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ms">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Saringan Perkembangan — e-Jejak Anak</title>
+  <meta name="description" content="Senarai semak saringan perkembangan mengikut umur anak.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="saringan" data-auth="parent">
+  <div id="site-header"></div>
+
+  <header class="page-head">
+    <div class="container">
+      <nav class="breadcrumb"><a href="index.html">Beranda</a> / <a href="dashboard.html">Dashboard</a> / <span>Saringan</span></nav>
+      <h1>Saringan Perkembangan</h1>
+      <p>Jawab setiap item dengan jujur berdasarkan pemerhatian anda terhadap anak.</p>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="container">
+
+      <!-- Tiada profil anak -->
+      <div class="notice notice--warn" id="no-child" style="display:none; margin-bottom:var(--sp-4)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></svg>
+        <span>Anda belum menambah profil anak. <a href="dashboard.html">Tambah profil anak</a> dahulu sebelum memulakan saringan.</span>
+      </div>
+
+      <div id="screening-area">
+        <!-- Maklumat anak (dari profil akaun) -->
+        <div class="card" style="margin-bottom:var(--sp-4)">
+          <h3 style="margin-bottom:var(--sp-3)">Maklumat Anak</h3>
+          <div class="grid grid-3" style="gap:var(--sp-3); align-items:end">
+            <div class="field" style="margin:0">
+              <label for="child-select">Pilih Anak</label>
+              <select class="select" id="child-select"></select>
+            </div>
+            <div class="field" style="margin:0">
+              <label>Umur (auto)</label>
+              <input class="input" id="child-age" readonly>
+            </div>
+            <div class="field" style="margin:0">
+              <label>Kumpulan Umur</label>
+              <input class="input" id="child-agegroup" readonly>
+            </div>
+          </div>
+        </div>
+
+        <!-- Maklumat ibu bapa (diambil dari akaun — selari dengan data doktor) -->
+        <div class="card" style="margin-bottom:var(--sp-4)">
+          <h3 style="margin-bottom:4px">Maklumat Ibu Bapa</h3>
+          <p class="muted" style="font-size:var(--fs-sm); margin-bottom:var(--sp-3)">Diambil dari akaun anda — <strong>doktor akan menghubungi</strong> melalui butiran ini jika perlu.</p>
+          <div class="grid grid-3" style="gap:var(--sp-3)">
+            <div class="field" style="margin:0"><label>Nama Ibu / Bapa</label><div class="input" id="acc-name" style="background:var(--brand-tint)">—</div></div>
+            <div class="field" style="margin:0"><label>No. Telefon</label><div class="input" id="acc-phone" style="background:var(--brand-tint)">—</div></div>
+            <div class="field" style="margin:0"><label>E-mel</label><div class="input" id="acc-email" style="background:var(--brand-tint)">—</div></div>
+          </div>
+        </div>
+
+        <!-- Banner kumpulan umur (checklist mengikut umur) -->
+        <div class="notice" id="age-banner" style="margin-bottom:var(--sp-3)"></div>
+
+        <div class="notice notice--warn" style="margin-bottom:var(--sp-5)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></svg> Semua soalan mesti dijawab. Selepas dihantar, keputusan akan <strong>dihantar kepada doktor</strong> untuk semakan dan tidak boleh diubah.</div>
+
+        <div class="screen-layout">
+          <!-- Sisi: kemajuan + navigasi domain -->
+          <aside class="screen-side">
+            <div class="progress-panel">
+              <div class="progress-ring"><div class="progress-ring__val" id="ring-val">0%</div></div>
+              <div class="progress-bar"><span id="q-bar" style="width:0%"></span></div>
+              <p class="muted center mt-3" style="margin:0; font-size:var(--fs-sm)"><span id="q-done" class="tnum">0</span> / <span id="q-total" class="tnum">0</span> dijawab</p>
+            </div>
+            <div class="progress-panel">
+              <h3 style="font-size:var(--fs-sm); text-transform:uppercase; letter-spacing:.08em; color:var(--muted)">Domain</h3>
+              <ul class="domain-nav" id="domain-nav"></ul>
+            </div>
+          </aside>
+
+          <!-- Soalan (dijana oleh main.js) -->
+          <div>
+            <div id="screening-form"></div>
+            <div class="screen-footer">
+              <a class="btn btn--ghost" href="dashboard.html">Batal</a>
+              <button class="btn btn--lg" id="submit-screening">Hantar Saringan <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

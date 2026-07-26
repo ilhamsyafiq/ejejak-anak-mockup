@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ms">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sejarah Saringan — e-Jejak Anak</title>
+  <meta name="description" content="Sejarah saringan perkembangan anak.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="dashboard" data-auth="parent">
+  <div id="site-header"></div>
+
+  <header class="page-head">
+    <div class="container">
+      <nav class="breadcrumb"><a href="index.html">Beranda</a> / <a href="dashboard.html">Dashboard</a> / <span>Sejarah Saringan</span></nav>
+      <h1>Sejarah Saringan — <span data-child>Anak</span></h1>
+      <p id="child-info">—</p>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="container" id="history-root">
+      <!-- Kepala surat (hanya muncul semasa cetak) -->
+      <div class="print-head print-only" id="print-head"></div>
+
+      <div class="flex items-center justify-between wrap gap-3 no-print" style="margin-bottom:var(--sp-4)">
+        <h2 style="margin:0">Semua Sesi Saringan</h2>
+        <div class="flex gap-3 wrap">
+          <button type="button" class="btn btn--ghost" id="btn-print-hist"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8" rx="1"/></svg> Cetak Sejarah</button>
+          <button type="button" class="btn btn--ghost" id="btn-pdf-hist"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg> Muat Turun PDF</button>
+          <a class="btn" href="dashboard.html">← Kembali ke Dashboard</a>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="data">
+          <thead><tr><th>Tarikh</th><th>Umur Ketika Saring</th><th>Markah</th><th>Triage</th><th class="col-action">Tindakan</th></tr></thead>
+          <tbody id="history-rows"></tbody>
+        </table>
+      </div>
+      <p class="muted mt-4" style="font-size:var(--fs-xs); max-width:70ch">
+        <strong>Penafian:</strong> Keputusan saringan adalah untuk saringan awal sahaja dan bukan diagnosis perubatan. Setiap sesi kekal muktamad selepas dihantar (RESULT-06).
+      </p>
+    </div>
+  </main>
+
+  <!-- Modal butiran sesi -->
+  <div class="modal-overlay" id="hist-modal" role="dialog" aria-modal="true">
+    <div class="modal" style="max-width:600px">
+      <div class="modal__head">
+        <div><h3>Butiran Keputusan</h3><p id="h-title2">—</p></div>
+        <div class="flex items-center gap-2">
+          <button type="button" class="btn btn--ghost" id="h-print" style="padding:.5em .8em"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8" rx="1"/></svg> Cetak</button>
+          <button type="button" class="btn btn--ghost" id="h-pdf" style="padding:.5em .8em"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg> Muat Turun PDF</button>
+          <button class="modal__close" id="h-close" aria-label="Tutup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+        </div>
+      </div>
+      <div class="modal__body" id="h-body" style="max-height:70vh; overflow:auto"></div>
+    </div>
+  </div>
+
+  <!-- Kawasan cetak satu sesi (diisi oleh JS) -->
+  <div id="print-region" class="print-only"></div>
+
+  <div id="site-footer"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

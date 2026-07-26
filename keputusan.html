@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ms">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Keputusan Saringan — e-Jejak Anak</title>
+  <meta name="description" content="Ringkasan keputusan saringan perkembangan anak.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="keputusan" data-auth="parent">
+  <div id="site-header"></div>
+
+  <header class="page-head">
+    <div class="container">
+      <nav class="breadcrumb"><a href="index.html">Beranda</a> / <a href="dashboard.html">Dashboard</a> / <span>Keputusan</span></nav>
+      <h1>Keputusan Saringan</h1>
+      <p>Ringkasan untuk <strong data-child-name>Anak</strong> · <span id="today"></span></p>
+    </div>
+  </header>
+
+  <main class="section" id="result-root">
+    <div class="container">
+
+      <!-- Kepala surat (hanya muncul semasa cetak) -->
+      <div class="print-head print-only" id="print-head"></div>
+
+      <div class="result-hero">
+        <span class="chip chip--accent">Saringan Selesai</span>
+        <h2 class="mt-3">Berikut ialah ringkasan pencapaian <span data-child-name>anak</span></h2>
+        <p class="muted">Keputusan ini menunjukkan bilangan kemahiran yang telah dan belum dicapai mengikut umur.</p>
+      </div>
+
+      <!-- Kad markah -->
+      <div class="result-scorecards">
+        <div class="scorecard scorecard--ok">
+          <b class="tnum" id="sc-achieved">0</b>
+          <span>Kemahiran dicapai (Ya)</span>
+        </div>
+        <div class="scorecard scorecard--warn">
+          <b class="tnum" id="sc-not">0</b>
+          <span>Belum dicapai (Tidak)</span>
+        </div>
+        <div class="scorecard scorecard--total">
+          <b class="tnum" id="sc-total">0</b>
+          <span>Jumlah item disaring</span>
+        </div>
+      </div>
+
+      <!-- Skor per domain -->
+      <div class="card" style="margin-bottom:var(--sp-5)">
+        <h3>Markah mengikut domain</h3>
+        <p class="muted" style="font-size:var(--fs-sm)">Peratus kemahiran dicapai bagi setiap domain perkembangan.</p>
+        <div class="domain-scores mt-4" id="domain-scores"></div>
+      </div>
+
+      <!-- Nasihat -->
+      <div id="advisory" class="advisory"></div>
+
+      <div class="notice mt-4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg> <span>Keputusan ini telah <strong>dihantar kepada doktor</strong> untuk semakan. Sekiranya saringan memerlukan perhatian, doktor akan menghubungi anda melalui maklumat yang diberikan.</span></div>
+
+      <!-- Maklumat Pendidikan (Carta Alir: papar bersama keputusan) -->
+      <div class="mt-5 no-print">
+        <div class="flex items-center justify-between wrap gap-3" style="margin-bottom:var(--sp-3)">
+          <h3 style="margin:0">Maklumat Pendidikan Untuk Anda</h3>
+          <a class="btn btn--ghost" href="pendidikan.html">Lihat Semua <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+        <div class="grid grid-3" id="result-edu"></div>
+      </div>
+
+      <!-- Tindakan -->
+      <div class="flex gap-3 wrap mt-5 no-print">
+        <button type="button" class="btn btn--lg" id="btn-print"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8" rx="1"/></svg> Cetak / Simpan PDF</button>
+        <a class="btn btn--ghost btn--lg" href="pendidikan.html">Baca Panduan Berkaitan <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="btn btn--ghost btn--lg" href="saringan.html">Saringan Baharu</a>
+        <a class="btn btn--ghost btn--lg" href="dashboard.html">Kembali ke Dashboard</a>
+      </div>
+
+      <p class="muted mt-4" style="font-size:var(--fs-xs); max-width:70ch">
+        <strong>Penafian:</strong> e-Jejak Anak menyediakan saringan awal sahaja dan tidak boleh ditafsirkan sebagai diagnosis perubatan. Sila rujuk profesional kesihatan yang bertauliah untuk penilaian lanjut.
+      </p>
+
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="assets/js/main.js"></script>
+  <script>
+    // Tarikh hari ini (paparan sahaja)
+    document.getElementById('today').textContent =
+      new Date().toLocaleDateString('ms-MY', { day:'numeric', month:'long', year:'numeric' });
+  </script>
+</body>
+</html>

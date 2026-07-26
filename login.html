@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ms">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Log Masuk — e-Jejak Anak</title>
+  <meta name="description" content="Log masuk ke akaun e-Jejak Anak anda.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="login">
+  <div id="site-header"></div>
+
+  <main class="auth-wrap">
+    <aside class="auth-aside">
+      <span class="eyebrow" style="color:var(--accent)">Selamat Kembali</span>
+      <h2>Teruskan perjalanan perkembangan anak anda.</h2>
+      <p>Log masuk untuk mengurus profil anak, menjalankan saringan baharu dan melihat sejarah keputusan.</p>
+      <ul>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Simpan sejarah saringan setiap anak</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Pantau kemajuan merentasi masa</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Akses penuh pusat pendidikan</li>
+      </ul>
+    </aside>
+
+    <div class="auth-main">
+      <div class="auth-card">
+        <h1 style="font-size:var(--fs-xl)">Log Masuk</h1>
+        <p class="muted">Masukkan butiran akaun anda untuk meneruskan.</p>
+        <form class="form-card mt-4" id="login-form">
+          <div class="notice notice--warn" id="login-msg" style="display:none; margin-bottom:var(--sp-3)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></svg><span></span></div>
+          <div class="field">
+            <label for="login-email">Alamat E-mel</label>
+            <input class="input" type="email" id="login-email" placeholder="nama@contoh.com" value="ibu@contoh.com" required>
+          </div>
+          <div class="field">
+            <label for="login-pass">Kata Laluan</label>
+            <input class="input" type="password" id="login-pass" placeholder="••••••••" value="demo1234" required>
+          </div>
+          <div class="form-aux">
+            <label class="checkbox"><input type="checkbox"> Ingat saya</label>
+            <a href="lupa-kata-laluan.html">Lupa kata laluan?</a>
+          </div>
+          <button class="btn btn--block btn--lg" type="submit">Log Masuk</button>
+          <div class="divider-or">atau</div>
+          <p class="center muted" style="margin:0">Belum ada akaun? <a href="daftar.html">Daftar percuma</a></p>
+        </form>
+        <p class="muted center mt-3" style="font-size:var(--fs-xs)">Akaun demo: <strong>ibu@contoh.com</strong> / <strong>demo1234</strong> (sudah diisi).</p>
+      </div>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

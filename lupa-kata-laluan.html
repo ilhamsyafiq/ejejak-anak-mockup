@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ms">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lupa Kata Laluan — e-Jejak Anak</title>
+  <meta name="description" content="Pulihkan kata laluan akaun e-Jejak Anak anda.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="login">
+  <div id="site-header"></div>
+
+  <main class="auth-wrap">
+    <aside class="auth-aside">
+      <span class="eyebrow" style="color:var(--accent)">Pemulihan Akaun</span>
+      <h2>Lupa kata laluan? Jangan risau.</h2>
+      <p>Masukkan e-mel berdaftar anda dan kami akan menghantar pautan untuk menetapkan semula kata laluan.</p>
+    </aside>
+
+    <div class="auth-main">
+      <div class="auth-card">
+        <h1 style="font-size:var(--fs-xl)">Set Semula Kata Laluan</h1>
+        <p class="muted">Pautan pemulihan akan dihantar ke e-mel berdaftar sahaja.</p>
+        <form class="form-card mt-4" onsubmit="event.preventDefault(); this.innerHTML='<div class=&quot;advisory advisory--ok&quot;><svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2.4&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;><path d=&quot;M20 6 9 17l-5-5&quot;/></svg><p>Jika e-mel ini berdaftar, pautan pemulihan telah dihantar. Sila semak peti masuk anda.</p></div>';">
+          <div class="field">
+            <label for="email">Alamat E-mel</label>
+            <input class="input" type="email" id="email" placeholder="nama@contoh.com" required>
+          </div>
+          <button class="btn btn--block btn--lg" type="submit">Hantar Pautan Pemulihan</button>
+          <p class="center muted mt-3" style="margin:0"><a href="login.html">← Kembali ke log masuk</a></p>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

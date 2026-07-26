@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ms">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pusat Pendidikan — e-Jejak Anak</title>
+  <meta name="description" content="Artikel, tips keibubapaan, aktiviti di rumah dan soalan lazim.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="pendidikan">
+  <div id="site-header"></div>
+
+  <header class="page-head">
+    <div class="container">
+      <nav class="breadcrumb"><a href="index.html">Beranda</a> / <span>Pusat Pendidikan</span></nav>
+      <h1>Pusat Pendidikan</h1>
+      <p>Sumber pengetahuan untuk menyokong perkembangan sihat anak anda.</p>
+    </div>
+  </header>
+
+  <main class="section" id="edu-root">
+    <div class="container" data-tabs>
+      <!-- Tab -->
+      <div class="tabs" role="tablist">
+        <button class="tab is-active" data-target="artikel">Artikel</button>
+        <button class="tab" data-target="tips">Tips Keibubapaan</button>
+        <button class="tab" data-target="aktiviti">Aktiviti di Rumah</button>
+        <button class="tab" data-target="faq">Soalan Lazim</button>
+      </div>
+
+      <!-- Kandungan dijana dari stor artikel (diurus Pentadbir) -->
+      <section class="tab-panel is-active" id="artikel"><div class="grid grid-3" id="art-artikel"></div></section>
+      <section class="tab-panel" id="tips"><div class="grid grid-3" id="art-tips"></div></section>
+      <section class="tab-panel" id="aktiviti"><div class="grid grid-3" id="art-aktiviti"></div></section>
+      <section class="tab-panel" id="faq"><div style="max-width:820px" id="art-faq"></div></section>
+
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="assets/js/main.js"></script>
+  <script>
+    // Buka tab berdasarkan #hash (cth. pendidikan.html#faq) selepas init
+    document.addEventListener('DOMContentLoaded', function () {
+      const hash = location.hash.replace('#', '');
+      if (hash) {
+        const tab = document.querySelector('.tab[data-target="' + hash + '"]');
+        if (tab) tab.click();
+      }
+    });
+  </script>
+</body>
+</html>
