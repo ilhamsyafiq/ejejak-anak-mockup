@@ -352,7 +352,7 @@ function buildHeader(active) {
   const user = currentUser();
   const brand = `
     <a class="brand" href="index.html" aria-label="e-Jejak Anak — Beranda">
-      <span class="brand__mark">${ICONS.footprint}</span>
+      <span class="brand__mark"><img src="assets/img/logo.png" alt="Logo e-Jejak Anak"></span>
       <span class="brand__text">
         <span class="brand__name">${SITE.name[0]}<b>${SITE.name[1]}</b></span>
         <span class="brand__tag">${SITE.tagline}</span>
@@ -416,7 +416,7 @@ function buildFooter() {
       <div class="footer__grid">
         <div class="footer__brand">
           <a class="brand" href="index.html">
-            <span class="brand__mark">${ICONS.footprint}</span>
+            <span class="brand__mark"><img src="assets/img/logo.png" alt="Logo e-Jejak Anak"></span>
             <span class="brand__text">
               <span class="brand__name">${SITE.name[0]}<b>${SITE.name[1]}</b></span>
               <span class="brand__tag">${SITE.tagline}</span>

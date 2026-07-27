@@ -238,13 +238,13 @@ img { max-width: 100%; display: block; }
 .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
 .brand:hover { text-decoration: none; }
 .brand__mark {
-  width: 44px; height: 44px; flex: none;
+  width: 56px; height: 56px; flex: none;
   display: grid; place-items: center;
-  border-radius: 13px;
-  background: linear-gradient(150deg, var(--brand), var(--brand-dark));
-  color: #fff; box-shadow: var(--shadow-sm);
 }
+.brand__mark img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .brand__mark svg { width: 26px; height: 26px; }
+/* Footer: latar merah gelap — beri lencana putih supaya logo jelas */
+.footer__brand .brand__mark { background: #fff; border-radius: 12px; padding: 4px; box-shadow: var(--shadow-sm); }
 .brand__text { display: flex; flex-direction: column; line-height: 1.05; }
 .brand__name {
   font-family: var(--font-head); font-weight: 800; font-size: 1.28rem;
