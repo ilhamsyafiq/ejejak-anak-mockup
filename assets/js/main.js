@@ -1401,7 +1401,7 @@ function historyReportHTML(child, subInfo, subs) {
     </div>
     <div style="font-size:13px; color:#333; margin-bottom:12px">${subInfo}</div>
     <table style="width:100%; border-collapse:collapse; font-size:12px">
-      <thead><tr style="background:#EAF3F5">
+      <thead><tr style="background:#FAEDED">
         <th style="text-align:left; padding:8px 9px; border:1px solid #d8e2e4">Tarikh</th>
         <th style="text-align:left; padding:8px 9px; border:1px solid #d8e2e4">Umur Ketika Saring</th>
         <th style="text-align:left; padding:8px 9px; border:1px solid #d8e2e4">Markah</th>
@@ -1446,7 +1446,7 @@ function sessionReportPDF(heading, subtitle, s) {
     <div style="font-size:15px; font-weight:700; margin:0 0 2px">${heading}</div>
     <div style="font-size:12px; color:#333; margin-bottom:12px">${subtitle}</div>
     <div style="margin-bottom:12px">
-      <span style="display:inline-block; padding:3px 12px; border-radius:99px; background:#EAF3F5; color:#12718A; font-size:12px; font-weight:600; margin-right:8px">Markah ${s.totalAchieved}/${s.total} (${t.pct}%)</span>
+      <span style="display:inline-block; padding:3px 12px; border-radius:99px; background:#FAEDED; color:#12718A; font-size:12px; font-weight:600; margin-right:8px">Markah ${s.totalAchieved}/${s.total} (${t.pct}%)</span>
       <span style="display:inline-block; padding:3px 12px; border-radius:99px; font-size:12px; font-weight:600; ${TRIAGE_STYLE[t.cls]}">${t.label}</span>
     </div>
     ${bars}

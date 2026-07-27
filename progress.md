@@ -30,6 +30,10 @@ Akses: `http://localhost/ejejak-anak/mockup/`
 
 ### Struktur & Reka Bentuk
 - Template CSS penuh dengan token warna (`assets/css/style.css`) — mudah reskin.
+- **Skema warna MAIK** (merah `#B31217` + emas `#F4C400`, dari logo Majlis Agama
+  Islam Kelantan). Token `:root` ditukar dari teal→merah; teks bahagian gelap
+  teal→rose hangat; gradien hero & ikon hero dikemas kini. Kekal: 5 warna domain,
+  avatar jantina, warna status (Ya/Belum/Ralat). Semua kontras lulus WCAG AA.
 - **Responsif mobile (3 breakpoint):** 980px (hero/auth/screen-layout jadi 1 lajur),
   760px (menu hamburger, grid → 1 lajur, tab admin leret melintang, kad anak 1 lajur,
   padding seksyen dikurangkan, kaki saringan balut, **footer jadi accordion**), 480px

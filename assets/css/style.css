@@ -16,15 +16,15 @@
 /* ------------------------------------------------------------------ */
 :root {
   /* Jenama / Brand */
-  --brand:        #12718A;   /* biru-teal utama  */
-  --brand-dark:   #0C4A5A;   /* header / footer  */
-  --brand-deep:   #073847;   /* teks atas gelap  */
-  --brand-soft:   #E6F1F4;   /* latar lembut     */
-  --brand-tint:   #F0F6F8;
+  --brand:        #B31217;   /* merah MAIK       */
+  --brand-dark:   #8A0D11;   /* header / footer  */
+  --brand-deep:   #5C070A;   /* teks atas gelap  */
+  --brand-soft:   #FBE9EA;   /* latar lembut     */
+  --brand-tint:   #FDF4F4;
 
   /* Aksen & status */
-  --accent:       #F4A73F;   /* amber hangat     */
-  --accent-soft:  #FDF0DC;
+  --accent:       #F4C400;   /* emas MAIK        */
+  --accent-soft:  #FDF3CE;
   --ok:           #4FA96A;   /* "Ya" / dicapai   */
   --ok-soft:      #E7F4EC;
   --warn:         #E08A3C;   /* belum dicapai    */
@@ -138,7 +138,7 @@ img { max-width: 100%; display: block; }
 .section { padding-block: var(--sp-7); }
 .section--tight { padding-block: var(--sp-6); }
 .section--soft { background: var(--brand-tint); }
-.section--brand { background: var(--brand-dark); color: #EAF3F5; }
+.section--brand { background: var(--brand-dark); color: #FAEDED; }
 .section--brand h2, .section--brand h3 { color: #fff; }
 
 .section-head { max-width: 640px; margin-bottom: var(--sp-5); }
@@ -203,14 +203,14 @@ img { max-width: 100%; display: block; }
 /* ------------------------------------------------------------------ */
 .topbar {
   background: var(--brand-deep);
-  color: #cfe4ea;
+  color: #F6DFE0;
   font-size: var(--fs-xs);
 }
 .topbar .container {
   display: flex; align-items: center; justify-content: space-between;
   gap: var(--sp-3); min-height: 38px; flex-wrap: wrap;
 }
-.topbar a { color: #cfe4ea; white-space: nowrap; }
+.topbar a { color: #F6DFE0; white-space: nowrap; }
 .topbar a:hover { color: #fff; }
 .topbar svg { width: 15px; height: 15px; flex: none; }
 .topbar__meta { display: flex; gap: var(--sp-4); flex-wrap: wrap; }
@@ -320,7 +320,7 @@ img { max-width: 100%; display: block; }
 .slide__copy { max-width: 560px; }
 .slide__copy .eyebrow { color: var(--accent); }
 .slide h1, .slide h2 { color: #fff; font-size: var(--fs-3xl); margin-bottom: var(--sp-3); }
-.slide p { color: #DCEAEE; font-size: var(--fs-md); margin-bottom: var(--sp-4); }
+.slide p { color: #F7E6E6; font-size: var(--fs-md); margin-bottom: var(--sp-4); }
 .slide__actions { display: flex; gap: var(--sp-3); flex-wrap: wrap; }
 
 /* Panel ilustrasi (SVG, tiada imej luar) */
@@ -455,7 +455,7 @@ img { max-width: 100%; display: block; }
   color: #fff; line-height: 1;
 }
 .stat__num b { color: var(--accent); }
-.stat__label { color: #bcd6dd; font-size: var(--fs-sm); margin-top: 6px; }
+.stat__label { color: #EEC9CB; font-size: var(--fs-sm); margin-top: 6px; }
 
 /* ------------------------------------------------------------------ */
 /* 10. FORMS (auth + profil)                                           */
@@ -476,9 +476,9 @@ img { max-width: 100%; display: block; }
   letter-spacing: -0.01em; color: #fff; font-size: var(--fs-2xl);
   margin: 0 0 var(--sp-2); max-width: none;
 }
-.auth-aside p { color: #DCEAEE; }
+.auth-aside p { color: #F7E6E6; }
 .auth-aside ul { list-style: none; padding: 0; margin: var(--sp-4) 0 0; display: grid; gap: var(--sp-3); }
-.auth-aside li { display: flex; gap: 12px; align-items: flex-start; color: #EAF3F5; }
+.auth-aside li { display: flex; gap: 12px; align-items: flex-start; color: #FAEDED; }
 .auth-aside li svg { width: 22px; height: 22px; color: var(--accent); flex: none; margin-top: 2px; }
 .auth-main { display: grid; place-items: center; padding: var(--sp-6) var(--sp-4); }
 .auth-card { width: 100%; max-width: 420px; }
@@ -514,9 +514,9 @@ img { max-width: 100%; display: block; }
   color: #fff; padding-block: var(--sp-5);
 }
 .page-head h1 { color: #fff; margin-bottom: 4px; }
-.page-head p { color: #cfe4ea; margin: 0; }
-.breadcrumb { display: flex; gap: 8px; font-size: var(--fs-sm); color: #9fc4cf; margin-bottom: var(--sp-2); }
-.breadcrumb a { color: #cfe4ea; }
+.page-head p { color: #F6DFE0; margin: 0; }
+.breadcrumb { display: flex; gap: 8px; font-size: var(--fs-sm); color: #E3B4B6; margin-bottom: var(--sp-2); }
+.breadcrumb a { color: #F6DFE0; }
 
 .dash-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--sp-4); }
 .child-card {
@@ -672,13 +672,13 @@ table.data tr:last-child td { border-bottom: 0; }
 /* ------------------------------------------------------------------ */
 /* 16. FOOTER                                                          */
 /* ------------------------------------------------------------------ */
-.footer { background: var(--brand-deep); color: #b9d3da; padding-top: var(--sp-6); }
-.footer a { color: #b9d3da; }
+.footer { background: var(--brand-deep); color: #EBC6C7; padding-top: var(--sp-6); }
+.footer a { color: #EBC6C7; }
 .footer a:hover { color: #fff; }
 .footer__grid { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1.3fr; gap: var(--sp-5); padding-bottom: var(--sp-5); }
 .footer__brand .brand__name { color: #fff; }
-.footer__brand .brand__tag { color: #8fb4bd; }
-.footer__brand p { color: #9fc4cf; font-size: var(--fs-sm); margin-top: var(--sp-3); }
+.footer__brand .brand__tag { color: #D7A3A5; }
+.footer__brand p { color: #E3B4B6; font-size: var(--fs-sm); margin-top: var(--sp-3); }
 .footer h4 { color: #fff; font-size: var(--fs-sm); letter-spacing: .08em; text-transform: uppercase; margin-bottom: var(--sp-3); }
 .footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; font-size: var(--fs-sm); }
 .footer__contact li { display: flex; gap: 10px; align-items: flex-start; }
@@ -686,7 +686,7 @@ table.data tr:last-child td { border-bottom: 0; }
 .footer__social { display: flex; gap: 10px; margin-top: var(--sp-3); }
 .footer__social a { width: 36px; height: 36px; border-radius: 10px; background: rgba(255,255,255,.08); display: grid; place-items: center; }
 .footer__social a:hover { background: var(--accent); color: var(--brand-deep); }
-.footer__bar { border-top: 1px solid rgba(255,255,255,.1); padding-block: var(--sp-3); font-size: var(--fs-xs); color: #8fb4bd; }
+.footer__bar { border-top: 1px solid rgba(255,255,255,.1); padding-block: var(--sp-3); font-size: var(--fs-xs); color: #D7A3A5; }
 .footer__bar .container { display: flex; justify-content: space-between; gap: var(--sp-3); flex-wrap: wrap; }
 
 /* Footer accordion — buka-tutup di mobile, sentiasa terbuka di desktop */
@@ -694,7 +694,7 @@ table.data tr:last-child td { border-bottom: 0; }
 .footer-acc summary { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); cursor: pointer; list-style: none; }
 .footer-acc summary::-webkit-details-marker { display: none; }
 .footer-acc summary h4 { margin: 0; }
-.footer-acc summary > svg { width: 20px; height: 20px; flex: none; color: #8fb4bd; transition: transform .2s ease; }
+.footer-acc summary > svg { width: 20px; height: 20px; flex: none; color: #D7A3A5; transition: transform .2s ease; }
 .footer-acc[open] summary > svg { transform: rotate(180deg); }
 @media (min-width: 761px) {
   /* Desktop: sentiasa terbuka (dikawal JS via atribut open); matikan toggle
@@ -741,7 +741,7 @@ table.data td .mini-domains i { width: 22px; height: 6px; border-radius: 3px; di
 .modal { background: #fff; border-radius: var(--radius-lg); width: 100%; max-width: 480px; box-shadow: var(--shadow-lg); overflow: hidden; animation: fade .25s ease; }
 .modal__head { padding: var(--sp-4); background: linear-gradient(150deg,var(--brand),var(--brand-dark)); color: #fff; display: flex; align-items: flex-start; justify-content: space-between; gap: var(--sp-3); }
 .modal__head h3 { color: #fff; margin: 0; }
-.modal__head p { color: #DCEAEE; margin: 2px 0 0; font-size: var(--fs-sm); }
+.modal__head p { color: #F7E6E6; margin: 2px 0 0; font-size: var(--fs-sm); }
 .modal__close { background: rgba(255,255,255,.15); border: 0; color: #fff; width: 34px; height: 34px; border-radius: 9px; cursor: pointer; display: grid; place-items: center; flex: none; }
 .modal__close svg { width: 20px; height: 20px; }
 .modal__body { padding: var(--sp-4); }
