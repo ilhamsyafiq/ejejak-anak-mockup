@@ -17,11 +17,14 @@ Mockup **antara muka sahaja** (HTML + CSS + JS tulen, tiada backend). Semua data
 disimulasi dengan `localStorage`/`sessionStorage`. Terletak di:
 
 ```
-C:\xampp\htdocs\ejejak-anak\mockup\
+C:\xampp\htdocs\ejejak-anak-mockup\
 ```
-Akses: `http://localhost/ejejak-anak/mockup/`
+Akses: `http://localhost/ejejak-anak-mockup/`
 
-> ⚠️ Folder `mockup/` berasingan daripada aplikasi Laravel di `ejejak-anak/`.
+> ℹ️ Mockup kini **projek berdiri sendiri** (27 Julai 2026: dipindah keluar &
+> aplikasi Laravel lama dibuang). Arkib Laravel (rujukan skema) di
+> `C:\xampp\htdocs\ejejak-anak-laravel-arkib.zip`. Projek sebenar akan dibina
+> berdasarkan mockup ini.
 > ⚠️ Data contoh kini **auto-segar** apabila versi benih naik (kini `ejejak_seed_v3`).
 > Sesi benih lama (id `SEED…`) diganti automatik dengan set **6 bulan** untuk carta
 > trend; saringan sebenar (id `S…`) dikekalkan. Jika perlu, `localStorage.clear()`.
