@@ -319,7 +319,7 @@ img { max-width: 100%; display: block; }
 }
 .slide__copy { max-width: 560px; }
 .slide__copy .eyebrow { color: var(--accent); }
-.slide h1 { color: #fff; font-size: var(--fs-3xl); margin-bottom: var(--sp-3); }
+.slide h1, .slide h2 { color: #fff; font-size: var(--fs-3xl); margin-bottom: var(--sp-3); }
 .slide p { color: #DCEAEE; font-size: var(--fs-md); margin-bottom: var(--sp-4); }
 .slide__actions { display: flex; gap: var(--sp-3); flex-wrap: wrap; }
 
@@ -470,6 +470,12 @@ img { max-width: 100%; display: block; }
   display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden;
 }
 .auth-aside h2 { color: #fff; font-size: var(--fs-2xl); }
+/* Tajuk hiasan panel sisi — bukan heading (elak h2 sebelum h1), tapi rupa sama h2 */
+.auth-aside .auth-aside__title {
+  font-family: var(--font-head); font-weight: 700; line-height: 1.18;
+  letter-spacing: -0.01em; color: #fff; font-size: var(--fs-2xl);
+  margin: 0 0 var(--sp-2); max-width: none;
+}
 .auth-aside p { color: #DCEAEE; }
 .auth-aside ul { list-style: none; padding: 0; margin: var(--sp-4) 0 0; display: grid; gap: var(--sp-3); }
 .auth-aside li { display: flex; gap: 12px; align-items: flex-start; color: #EAF3F5; }
@@ -767,7 +773,7 @@ table.data td .mini-domains i { width: 22px; height: 6px; border-radius: 3px; di
 @media (max-width: 980px) {
   .slide__inner { grid-template-columns: 1fr; }
   .slide__art { display: none; }
-  .slide h1 { font-size: var(--fs-2xl); }
+  .slide h1, .slide h2 { font-size: var(--fs-2xl); }
   .grid-4, .grid-5, .stats { grid-template-columns: repeat(2, 1fr); }
   .footer__grid { grid-template-columns: 1fr 1fr; }
   .auth-wrap { grid-template-columns: 1fr; }
@@ -839,6 +845,12 @@ table.data td .mini-domains i { width: 22px; height: 6px; border-radius: 3px; di
 
   /* Kad langkah / pengumuman tinggi min tak perlu di telefon */
   .add-card { min-height: 160px; }
+
+  /* Sasaran sentuh min 44×44px (garis panduan UX: Touch Target — keutamaan tinggi).
+     Butang kekal nampak kemas, cuma dijamin cukup tinggi untuk jari. */
+  .btn, .yn label, .filter-chip, .tab { min-height: 44px; }
+  .btn--ghost[data-del-child], .btn--ghost[data-del-q],
+  .btn--ghost[data-del-domain], .btn--ghost[data-del] { min-width: 44px; justify-content: center; }
 }
 
 /* Telefon kecil (≤ 480px) */
