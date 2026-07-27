@@ -429,33 +429,39 @@ function buildFooter() {
             <a href="#" aria-label="YouTube">${ICONS.yt}</a>
           </div>
         </div>
-        <div>
-          <h4>Pautan Pantas</h4>
-          <ul>
-            <li><a href="index.html#tentang">Tentang Kami</a></li>
-            <li><a href="saringan.html">Mula Saringan</a></li>
-            <li><a href="index.html#domain">5 Domain</a></li>
-            <li><a href="dashboard.html">Dashboard</a></li>
-            <li><a href="admin-login.html">Panel Doktor / Pentadbir</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4>Pendidikan</h4>
-          <ul>
-            <li><a href="pendidikan.html#artikel">Artikel</a></li>
-            <li><a href="pendidikan.html#tips">Tips</a></li>
-            <li><a href="pendidikan.html#aktiviti">Aktiviti</a></li>
-            <li><a href="pendidikan.html#faq">Soalan Lazim</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4>Hubungi Kami</h4>
-          <ul class="footer__contact">
-            <li>${ICONS.pin} <span>Aras 2, Bangunan Kesihatan Kanak-kanak, 11800 Pulau Pinang</span></li>
-            <li>${ICONS.phone} <span>04-653 0000</span></li>
-            <li>${ICONS.mail} <span>bantuan@ejejakanak.my</span></li>
-          </ul>
-        </div>
+        <details class="footer-acc">
+          <summary><h4>Pautan Pantas</h4>${ICONS.chevronDown}</summary>
+          <div class="acc-body">
+            <ul>
+              <li><a href="index.html#tentang">Tentang Kami</a></li>
+              <li><a href="saringan.html">Mula Saringan</a></li>
+              <li><a href="index.html#domain">5 Domain</a></li>
+              <li><a href="dashboard.html">Dashboard</a></li>
+              <li><a href="admin-login.html">Panel Doktor / Pentadbir</a></li>
+            </ul>
+          </div>
+        </details>
+        <details class="footer-acc">
+          <summary><h4>Pendidikan</h4>${ICONS.chevronDown}</summary>
+          <div class="acc-body">
+            <ul>
+              <li><a href="pendidikan.html#artikel">Artikel</a></li>
+              <li><a href="pendidikan.html#tips">Tips</a></li>
+              <li><a href="pendidikan.html#aktiviti">Aktiviti</a></li>
+              <li><a href="pendidikan.html#faq">Soalan Lazim</a></li>
+            </ul>
+          </div>
+        </details>
+        <details class="footer-acc">
+          <summary><h4>Hubungi Kami</h4>${ICONS.chevronDown}</summary>
+          <div class="acc-body">
+            <ul class="footer__contact">
+              <li>${ICONS.pin} <span>Aras 2, Bangunan Kesihatan Kanak-kanak, 11800 Pulau Pinang</span></li>
+              <li>${ICONS.phone} <span>04-653 0000</span></li>
+              <li>${ICONS.mail} <span>bantuan@ejejakanak.my</span></li>
+            </ul>
+          </div>
+        </details>
       </div>
     </div>
     <div class="footer__bar">

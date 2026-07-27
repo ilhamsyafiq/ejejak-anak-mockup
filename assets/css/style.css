@@ -683,6 +683,20 @@ table.data tr:last-child td { border-bottom: 0; }
 .footer__bar { border-top: 1px solid rgba(255,255,255,.1); padding-block: var(--sp-3); font-size: var(--fs-xs); color: #8fb4bd; }
 .footer__bar .container { display: flex; justify-content: space-between; gap: var(--sp-3); flex-wrap: wrap; }
 
+/* Footer accordion — buka-tutup di mobile, sentiasa terbuka di desktop */
+.footer-acc { border: 0; }
+.footer-acc summary { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); cursor: pointer; list-style: none; }
+.footer-acc summary::-webkit-details-marker { display: none; }
+.footer-acc summary h4 { margin: 0; }
+.footer-acc summary > svg { width: 20px; height: 20px; flex: none; color: #8fb4bd; transition: transform .2s ease; }
+.footer-acc[open] summary > svg { transform: rotate(180deg); }
+@media (min-width: 761px) {
+  /* Desktop: paksa terbuka, matikan toggle, sembunyi anak panah */
+  .footer-acc > .acc-body { display: block !important; }
+  .footer-acc summary { pointer-events: none; margin-bottom: var(--sp-3); }
+  .footer-acc summary > svg { display: none; }
+}
+
 /* ------------------------------------------------------------------ */
 /* 17. MISC                                                            */
 /* ------------------------------------------------------------------ */
@@ -765,6 +779,12 @@ table.data td .mini-domains i { width: 22px; height: 6px; border-radius: 3px; di
   :root { --fs-3xl: 2.3rem; --fs-2xl: 2rem; --fs-xl: 1.6rem; }
   .nav__cta .btn--ghost { display: none; }
   .nav-toggle { display: inline-flex; }
+
+  /* Panel doktor/admin: TIADA menu hamburger — pastikan Log Keluar kekal nampak.
+     Jenama di baris 1; chip nama + Log Keluar turun ke baris 2. */
+  body[data-page="admin"] .nav .container { flex-wrap: wrap; row-gap: var(--sp-2); }
+  body[data-page="admin"] .nav__cta { width: 100%; justify-content: space-between; gap: var(--sp-2); }
+  body[data-page="admin"] .nav__cta .btn--ghost { display: inline-flex; }
   .menu {
     position: fixed; inset: var(--nav-h) 0 auto 0; flex-direction: column; align-items: stretch;
     background: #fff; border-bottom: 1px solid var(--line); padding: var(--sp-3);
@@ -779,9 +799,78 @@ table.data td .mini-domains i { width: 22px; height: 6px; border-radius: 3px; di
   .result-scorecards { grid-template-columns: 1fr; }
   .dscore { grid-template-columns: 110px 1fr 44px; }
   .q-item { flex-direction: column; align-items: stretch; }
-  .yn { justify-content: stretch; } .yn label { flex: 1; }
+  .yn { justify-content: stretch; gap: var(--sp-2); }
+  .yn label { flex: 1; min-width: 0; padding: 0.5em 0.7em; gap: 5px; }
+  .yn label svg { width: 16px; height: 16px; flex: none; }
   .field-row { grid-template-columns: 1fr; }
-  .footer__grid { grid-template-columns: 1fr; }
+
+  /* Footer: setiap kumpulan pautan jadi accordion (buka-tutup) — paling pendek */
+  .footer { padding-top: var(--sp-5); }
+  .footer__grid { grid-template-columns: 1fr; gap: 0; }
+  .footer__brand { margin-bottom: var(--sp-3); }
+  .footer ul { gap: 8px; }
+  .footer-acc summary { padding: 0.9em 0; border-top: 1px solid rgba(255,255,255,.12); }
+  .footer-acc .acc-body { padding-bottom: var(--sp-3); }
+
+  /* Density: seksyen terlalu tinggi di telefon */
+  .section { padding-block: var(--sp-6); }
+  .section--tight { padding-block: var(--sp-5); }
+
+  /* Kad anak: minmax(280px) boleh melimpah di skrin sempit → satu lajur */
+  .dash-grid { grid-template-columns: 1fr; }
+
+  /* Borang: kurangkan padding besar */
+  .form-card { padding: var(--sp-4); }
+
+  /* Tab admin (7 tab) — leret melintang, bukan berbaris berselerak */
+  .tabs { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab { white-space: nowrap; flex: none; }
+
+  /* Kaki saringan: JANGAN sticky di mobile — ia menutup soalan terakhir.
+     Jadikan static (mengalir selepas soalan) + Batal ikut kandungan, Hantar mengembang. */
+  .screen-footer {
+    position: static; flex-wrap: nowrap;
+    background: transparent; backdrop-filter: none; border-top: 0;
+    margin-top: var(--sp-4); padding: 0;
+  }
+  .screen-footer .btn--ghost { flex: 0 0 auto; }
+  .screen-footer .btn--lg { flex: 1 1 auto; justify-content: center; }
+
+  /* Kad langkah / pengumuman tinggi min tak perlu di telefon */
+  .add-card { min-height: 160px; }
+}
+
+/* Telefon kecil (≤ 480px) */
+@media (max-width: 480px) {
+  :root { --fs-2xl: 1.75rem; --fs-xl: 1.45rem; --fs-lg: 1.25rem; }
+  .container { padding-inline: var(--sp-3); }
+  .section { padding-block: var(--sp-5); }
+
+  /* Topbar terlalu sesak — sembunyikan hiasan, kekal telefon & e-mel */
+  .topbar__meta span:nth-child(3) { display: none; }
+  .topbar__social { display: none; }
+
+  /* Butang penuh lebar lebih mudah ditekan */
+  .btn--lg { width: 100%; justify-content: center; }
+  .slide__actions .btn { flex: 1 1 auto; justify-content: center; }
+
+  /* Butang hubungi dalam modal — susun menegak jika sempit */
+  .contact-actions { grid-template-columns: 1fr; }
+
+  /* Skorkad markah domain — kecilkan lajur label */
+  .dscore { grid-template-columns: 92px 1fr 40px; gap: var(--sp-2); }
+
+  /* Modal rapat ke tepi skrin */
+  .modal__head, .modal__body { padding: var(--sp-3); }
+
+  /* Kad domain 5-warna & langkah — padding lebih padat */
+  .quick-card, .domain-card, .step, .card { padding: var(--sp-3); }
+
+  /* Footer lebih pendek lagi: sembunyi perenggan perihalan, susun bar hak cipta */
+  .footer { padding-top: var(--sp-4); }
+  .footer__brand p { display: none; }
+  .footer__bar .container { flex-direction: column; gap: 4px; text-align: center; }
 }
 
 /* ------------------------------------------------------------------ */

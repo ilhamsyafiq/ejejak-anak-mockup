@@ -3,9 +3,9 @@
 > Fail ini merekod status pembangunan mockup. **Sambung kerja dari bahagian
 > "LANGKAH SETERUSNYA" di bawah.** Kemas kini fail ini setiap kali ada perubahan.
 
-Terakhir dikemas kini: sesi pembangunan (27 Julai 2026) — tambah **sistem 4
-peranan** (superadmin/admin/doctor/parent) dengan tapisan akses ikut peranan.
-Sebelum ini: **Cetak/PDF** keputusan & sejarah + **carta trend statistik** (Canvas).
+Terakhir dikemas kini: sesi pembangunan (27 Julai 2026) — **pas responsif mobile
+menyeluruh** (semua halaman). Sebelum ini: sistem 4 peranan
+(superadmin/admin/doctor/parent), Cetak/PDF keputusan & sejarah, carta trend (Canvas).
 
 ---
 
@@ -30,6 +30,16 @@ Akses: `http://localhost/ejejak-anak/mockup/`
 
 ### Struktur & Reka Bentuk
 - Template CSS penuh dengan token warna (`assets/css/style.css`) — mudah reskin.
+- **Responsif mobile (3 breakpoint):** 980px (hero/auth/screen-layout jadi 1 lajur),
+  760px (menu hamburger, grid → 1 lajur, tab admin leret melintang, kad anak 1 lajur,
+  padding seksyen dikurangkan, kaki saringan balut, **footer jadi accordion**), 480px
+  (topbar diringkaskan, butang penuh lebar, modal & kad lebih padat, skala fon
+  dikecilkan). Semua dalam blok `@media` — paparan desktop tidak berubah langsung.
+- **Footer accordion:** 3 kumpulan pautan (Pautan Pantas/Pendidikan/Hubungi) guna
+  `<details>/<summary>` — tertutup di mobile (footer paling pendek), sentiasa terbuka
+  & toggle dimatikan di desktop (`@media min-width:761px`). Struktur di `buildFooter()`.
+- **Cache-busting:** pautan CSS & `<script main.js>` di semua HTML ada `?v=` (kini
+  `20260727c`). **Bump nilai ini setiap kali edit style.css / main.js.**
 - Header/footer disuntik dari satu sumber (objek `SITE` dalam `main.js`).
 - Reka bentuk gaya institusi (rujukan USM-MAIK), motif tapak kaki, responsif.
 - Header papar status log masuk (nama + Log Keluar) + butang CTA ikut status
