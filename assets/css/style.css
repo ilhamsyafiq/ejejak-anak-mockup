@@ -697,8 +697,8 @@ table.data tr:last-child td { border-bottom: 0; }
 .footer-acc summary > svg { width: 20px; height: 20px; flex: none; color: #8fb4bd; transition: transform .2s ease; }
 .footer-acc[open] summary > svg { transform: rotate(180deg); }
 @media (min-width: 761px) {
-  /* Desktop: paksa terbuka, matikan toggle, sembunyi anak panah */
-  .footer-acc > .acc-body { display: block !important; }
+  /* Desktop: sentiasa terbuka (dikawal JS via atribut open); matikan toggle
+     & sembunyi anak panah supaya nampak seperti tajuk biasa. */
   .footer-acc summary { pointer-events: none; margin-bottom: var(--sp-3); }
   .footer-acc summary > svg { display: none; }
 }

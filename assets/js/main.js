@@ -429,7 +429,7 @@ function buildFooter() {
             <a href="#" aria-label="YouTube">${ICONS.yt}</a>
           </div>
         </div>
-        <details class="footer-acc">
+        <details class="footer-acc" open>
           <summary><h4>Pautan Pantas</h4>${ICONS.chevronDown}</summary>
           <div class="acc-body">
             <ul>
@@ -441,7 +441,7 @@ function buildFooter() {
             </ul>
           </div>
         </details>
-        <details class="footer-acc">
+        <details class="footer-acc" open>
           <summary><h4>Pendidikan</h4>${ICONS.chevronDown}</summary>
           <div class="acc-body">
             <ul>
@@ -452,7 +452,7 @@ function buildFooter() {
             </ul>
           </div>
         </details>
-        <details class="footer-acc">
+        <details class="footer-acc" open>
           <summary><h4>Hubungi Kami</h4>${ICONS.chevronDown}</summary>
           <div class="acc-body">
             <ul class="footer__contact">
@@ -502,6 +502,19 @@ function mountChrome() {
     sessionStorage.removeItem('ejejak_user');
     window.location.href = 'index.html';
   });
+
+  // Footer accordion: buka penuh di desktop, tutup (boleh ketuk) di mobile.
+  // Hanya bertindak bila melintasi breakpoint 760px supaya toggle pengguna
+  // di mobile tak tertutup semula bila skrol (mobile fire 'resize').
+  let footerAccDesktop = null;
+  const syncFooterAcc = () => {
+    const desktop = window.innerWidth > 760;
+    if (desktop === footerAccDesktop) return;
+    footerAccDesktop = desktop;
+    document.querySelectorAll('.footer-acc').forEach(d => { d.open = desktop; });
+  };
+  syncFooterAcc();
+  window.addEventListener('resize', syncFooterAcc);
 }
 
 /* Tunjuk/sembunyi elemen ikut status log masuk:
