@@ -51,6 +51,7 @@ const ICONS = {
   whatsapp: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.5 15.3L2 22l4.8-1.5A10 10 0 1 0 12 2Zm5.4 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.2-.7-2.7-1.1-4.4-3.9-4.5-4.1-.1-.2-1-1.4-1-2.6 0-1.2.6-1.8.9-2.1.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 1.9c.1.2.1.4 0 .5l-.4.5c-.2.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.2.1.4.1.6-.1l.7-.9c.2-.2.4-.2.6-.1l1.8.9c.2.1.4.2.5.3.1.2.1.7-.1 1.3Z"/></svg>',
   logout: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg>',
   eye: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>',
+  key: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"/></svg>',
 };
 /* Ikon yang dibenarkan untuk domain tambahan doktor */
 const DOMAIN_ICONS = ['star', 'bulb', 'baby', 'shield', 'chart', 'help', 'book', 'play'];
@@ -164,6 +165,7 @@ const TAB_ROLES = {
   'tab-statistik': ['superadmin', 'admin', 'doctor'],
   'tab-soalan': ['doctor'],
   'tab-artikel': ['superadmin', 'admin'],
+  'tab-pengguna': ['superadmin', 'admin'],
   'tab-laporan': ['superadmin', 'admin'],
   'tab-log': ['superadmin', 'admin'],
   'tab-akaun': ['superadmin', 'admin', 'doctor'],
@@ -188,6 +190,8 @@ function currentAdmin() { try { return JSON.parse(sessionStorage.getItem('ejejak
    Label tindakan mesra pengguna untuk paparan. */
 const ACTION_LABEL = {
   'login': 'Log masuk', 'account.create': 'Cipta akaun', 'account.update': 'Kemas kini akaun', 'account.delete': 'Padam akaun',
+  'account.impersonate': 'Log masuk sebagai ibu bapa', 'account.impersonate.end': 'Tamat penyamaran',
+  'user.update': 'Kemas kini pengguna', 'user.reset': 'Set semula kata laluan', 'user.delete': 'Padam pengguna',
   'parent.contact': 'Hubungi ibu bapa', 'report.export': 'Eksport laporan',
   'question.add': 'Tambah soalan', 'domain.create': 'Cipta domain',
   'article.create': 'Tambah artikel', 'article.delete': 'Padam artikel',
@@ -204,6 +208,75 @@ function logAudit(action, detail) {
     action, detail: detail || '',
   });
   write('ejejak_audit', log.slice(0, 500)); // had saiz untuk mockup
+}
+
+/* ---------- 2b. IMPERSONASI (pentadbir log masuk sebagai ibu bapa) --
+   Superadmin/pentadbir boleh "menyamar" sebagai ibu bapa untuk melihat
+   dashboard & saringan mereka bagi tujuan sokongan. Sesi doktor
+   (ejejak_admin) DIKEKALKAN supaya boleh kembali ke panel. Penanda
+   ejejak_impersonate menyimpan siapa sedang menyamar sebagai siapa. */
+function currentImpersonation() { try { return JSON.parse(sessionStorage.getItem('ejejak_impersonate')); } catch (e) { return null; } }
+
+// Menyamar sebagai IBU BAPA — superadmin & pentadbir. Sesi doktor (ejejak_admin)
+// dikekalkan; kita hanya tambah sesi ibu bapa (ejejak_user) supaya boleh kembali.
+function startImpersonation(userId) {
+  const admin = currentAdmin();
+  if (!admin || !canManageAccounts(admin.role)) { alert('Hanya pentadbir boleh menyamar sebagai ibu bapa.'); return; }
+  const u = getUsers().find(x => x.id === userId);
+  if (!u) { alert('Akaun ibu bapa tidak dijumpai.'); return; }
+  sessionStorage.setItem('ejejak_impersonate', JSON.stringify({ type: 'parent', adminId: admin.id, adminName: admin.name, targetId: u.id, targetName: u.name }));
+  sessionStorage.setItem('ejejak_user', JSON.stringify({ id: u.id, name: u.name, email: u.email, phone: u.phone, role: 'parent' }));
+  logAudit('account.impersonate', `Menyamar sebagai ibu bapa: ${u.name} (${u.email})`);
+  window.location.href = 'dashboard.html';
+}
+
+// Menyamar sebagai STAF (doktor atau pentadbir) untuk sokongan / nyahpepijat.
+//   • Doktor    : superadmin (mana-mana) atau pentadbir (org sendiri sahaja).
+//   • Pentadbir : superadmin sahaja.
+//   • Superadmin & akaun sendiri tidak boleh disamar.
+// Sesi asal disimpan (backupAdmin) supaya boleh dipulihkan; ejejak_admin ditukar.
+function impersonateStaff(staffId) {
+  const admin = currentAdmin();
+  if (!admin || !canManageAccounts(admin.role)) { alert('Hanya pentadbir boleh menyamar sebagai staf.'); return; }
+  const d = getAdmins().find(x => x.id === staffId);
+  if (!d) { alert('Akaun staf tidak dijumpai.'); return; }
+  if (d.id === admin.id) { alert('Anda tidak boleh menyamar sebagai diri sendiri.'); return; }
+  if (d.role === 'superadmin') { alert('Akaun superadmin tidak boleh disamar.'); return; }
+  if (d.role === 'admin' && admin.role !== 'superadmin') { alert('Hanya superadmin boleh menyamar sebagai pentadbir.'); return; }
+  if (d.role === 'doctor' && admin.role !== 'superadmin' && d.org !== admin.org) { alert('Anda hanya boleh menyamar sebagai doktor dalam organisasi anda.'); return; }
+  const label = ROLE_LABEL[d.role] || d.role;
+  sessionStorage.setItem('ejejak_impersonate', JSON.stringify({ type: 'staff', adminId: admin.id, adminName: admin.name, backupAdmin: admin, targetId: d.id, targetName: d.name, targetRole: d.role }));
+  logAudit('account.impersonate', `Menyamar sebagai ${label}: ${d.name} (${d.org})`); // dilog sebagai pelaku asal (sebelum tukar sesi)
+  sessionStorage.setItem('ejejak_admin', JSON.stringify({ id: d.id, name: d.name, email: d.email, phone: d.phone, jawatan: d.jawatan, org: d.org, role: d.role }));
+  window.location.href = 'admin.html';
+}
+
+function stopImpersonation() {
+  const imp = currentImpersonation();
+  sessionStorage.removeItem('ejejak_impersonate');
+  if (imp && imp.backupAdmin) {
+    sessionStorage.setItem('ejejak_admin', JSON.stringify(imp.backupAdmin)); // staf: pulih sesi asal
+  } else if (imp) {
+    sessionStorage.removeItem('ejejak_user'); // ibu bapa: buang sesi ibu bapa sahaja
+  }
+  if (imp) logAudit('account.impersonate.end', `Tamat penyamaran sebagai: ${imp.targetName}`); // dilog selepas sesi asal dipulih
+  window.location.href = 'admin.html';
+}
+
+// Bar amaran "sedang menyamar" — dipaparkan pada semua halaman semasa penyamaran
+// aktif, dengan butang untuk tamat & kembali ke sesi asal.
+function renderImpersonationBanner() {
+  const imp = currentImpersonation();
+  if (!imp) return;
+  const asWhat = imp.type === 'parent' ? 'ibu bapa' : (imp.targetRole ? (ROLE_LABEL[imp.targetRole] || 'staf').toLowerCase() : 'staf');
+  const bar = document.createElement('div');
+  bar.className = 'impersonate-bar';
+  bar.innerHTML = `<div class="container impersonate-bar__inner">
+    <span>${ICONS.eye} <strong>Mod Penyamaran</strong> — anda sedang melihat sebagai ${asWhat} <strong>${imp.targetName}</strong>.</span>
+    <button class="btn" id="imp-return" type="button">${ICONS.logout} Tamat &amp; kembali sebagai ${imp.adminName}</button>
+  </div>`;
+  document.body.insertBefore(bar, document.body.firstChild);
+  document.getElementById('imp-return')?.addEventListener('click', stopImpersonation);
 }
 
 /* ---------- 3. UMUR (auto dari tarikh lahir) ----------------------- */
@@ -374,7 +447,7 @@ function buildHeader(active) {
   }).join('');
 
   const cta = user
-    ? `<a class="btn btn--ghost" href="dashboard.html">${ICONS.user} ${user.name.split(' ')[0]}</a>
+    ? `<a class="btn btn--ghost" href="profil.html" title="Profil Saya">${ICONS.user} ${user.name.split(' ')[0]}</a>
        <a class="btn" href="#" id="logoutBtn">${ICONS.logout} Log Keluar</a>`
     : `<a class="btn btn--ghost" href="login.html">Log Masuk</a>
        <a class="btn" href="daftar.html">Daftar Percuma</a>`;
@@ -499,6 +572,7 @@ function mountChrome() {
   });
   document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
     e.preventDefault();
+    if (currentImpersonation()) { stopImpersonation(); return; } // kembali ke panel, bukan log keluar penuh
     sessionStorage.removeItem('ejejak_user');
     window.location.href = 'index.html';
   });
@@ -677,7 +751,7 @@ function initAuthForms() {
       const users = getUsers();
       if (users.some(x => x.email.toLowerCase() === email)) { setMsg('reg-msg', 'E-mel ini sudah berdaftar. Sila log masuk.'); return; }
       const id = 'U' + Date.now();
-      users.push({ id, name, email, phone, password: pass, role: 'parent' });
+      users.push({ id, name, email, phone, password: pass, role: 'parent', createdAt: new Date().toISOString() });
       saveUsers(users);
       sessionStorage.setItem('ejejak_user', JSON.stringify({ id, name, email, phone, role: 'parent' }));
       window.location.href = 'dashboard.html';
@@ -1635,12 +1709,342 @@ function buildReportRows() {
     const last = us[0];
     const avg = us.length ? Math.round(us.reduce((a, s) => a + s.totalAchieved / s.total, 0) / us.length * 100) : 0;
     return {
-      name: u.name, email: u.email, phone: u.phone || '-',
+      id: u.id, name: u.name, email: u.email, phone: u.phone || '-',
       children: childrenOf(u.id).length, screenings: us.length,
       avg: us.length ? avg + '%' : '-', last: last ? fmtDate(last.submittedAt) : '-',
     };
   });
 }
+/* ---------- 16b. PENTADBIR: URUS PENGGUNA (ibu bapa) ---------------
+   Jadual pengurusan akaun ibu bapa dengan tindakan: sunting, lihat,
+   set semula kata laluan, padam, dan "Login as" (menyamar). */
+function userCreatedText(u) {
+  if (u.createdAt) return fmtDate(u.createdAt);
+  const m = /^U(\d{12,})$/.exec(u.id || '');
+  if (m) return fmtDate(new Date(Number(m[1])).toISOString());
+  return '—';
+}
+function initUsersAdmin() {
+  const rows = document.getElementById('user-rows');
+  if (!rows) return;
+  const me = currentAdmin();
+  if (!canManageAccounts(me?.role)) return; // urus pengguna: pentadbir sahaja
+  const isSuper = me.role === 'superadmin';
+  const searchEl = document.getElementById('user-search');
+  const filterEl = document.getElementById('user-filter');
+  const viewModal = document.getElementById('user-view-modal');
+  const editModal = document.getElementById('user-edit-modal');
+  let q = '', lvl = 'semua';
+
+  // Senarai doktor dalam skop (untuk kad statistik).
+  function scopedDoctors() {
+    let docs = getAdmins().filter(a => a.role === 'doctor');
+    if (!isSuper) docs = docs.filter(a => a.org === me.org);
+    return docs;
+  }
+  // Staf boleh urus: doktor (superadmin semua / pentadbir org sendiri) + pentadbir
+  // lain (superadmin sahaja). Superadmin & akaun sendiri dikecualikan.
+  function scopedStaff() {
+    return getAdmins().filter(a => {
+      if (a.role === 'doctor') return isSuper || a.org === me.org;
+      if (a.role === 'admin')  return isSuper && a.id !== me.id;
+      return false; // superadmin tidak disenaraikan
+    });
+  }
+  // Senarai akaun bersatu: ibu bapa + staf.
+  function accounts() {
+    const parents = getUsers().map(u => ({ kind: 'parent', role: 'parent', id: u.id, name: u.name, email: u.email, phone: u.phone, org: null, createdAt: u.createdAt }));
+    const staff = scopedStaff().map(a => ({ kind: 'staff', role: a.role, id: a.id, name: a.name, email: a.email, phone: a.phone, org: a.org, jawatan: a.jawatan }));
+    return [...parents, ...staff];
+  }
+
+  function stats() {
+    const subs = getSubmissions();
+    const ref = subs.filter(s => s.total && (s.totalAchieved / s.total) < 0.7).length;
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    set('us-parents', getUsers().length); set('us-doctors', scopedDoctors().length);
+    set('us-screenings', subs.length); set('us-referral', ref);
+  }
+
+  function render() {
+    stats();
+    const subs = getSubmissions();
+    let list = accounts();
+    if (lvl !== 'semua') list = list.filter(a => a.role === lvl);
+    if (q) list = list.filter(a => `${a.name} ${a.email} ${a.phone || ''} ${a.org || ''}`.toLowerCase().includes(q));
+    const cnt = document.getElementById('user-count');
+    if (cnt) cnt.textContent = `${list.length} pengguna`;
+    rows.innerHTML = list.length ? list.map(a => {
+      const isParent = a.kind === 'parent';
+      const kids = isParent ? childrenOf(a.id).length : '—';
+      const scr = isParent ? subs.filter(s => s.userId === a.id).length : '—';
+      const level = isParent
+        ? `<span class="chip">Ibu Bapa</span>`
+        : `<span class="chip chip--accent">${ROLE_LABEL[a.role] || a.role}</span>${a.org ? ` <span class="chip">${a.org}</span>` : ''}`;
+      const created = isParent ? userCreatedText(a) : '—';
+      return `<tr>
+        <td class="muted" style="white-space:nowrap">${created}</td>
+        <td><strong>${a.name}</strong></td>
+        <td>${level}</td>
+        <td>${a.email}</td>
+        <td style="white-space:nowrap">${a.phone || '-'}</td>
+        <td class="tnum">${kids}</td>
+        <td class="tnum">${scr}</td>
+        <td class="col-action">
+          <div class="flex gap-2" style="justify-content:flex-end; flex-wrap:wrap">
+            <button class="btn btn--ghost" data-act="edit" data-kind="${a.kind}" data-id="${a.id}" style="padding:.35em .55em" title="Sunting butiran">${ICONS.edit}</button>
+            <button class="btn btn--ghost" data-act="view" data-kind="${a.kind}" data-id="${a.id}" style="padding:.35em .55em" title="Lihat butiran">${ICONS.eye}</button>
+            <button class="btn btn--ghost" data-act="reset" data-kind="${a.kind}" data-id="${a.id}" style="padding:.35em .55em" title="Set semula kata laluan">${ICONS.key}</button>
+            <button class="btn btn--ghost" data-act="del" data-kind="${a.kind}" data-id="${a.id}" style="padding:.35em .55em" title="Padam">${ICONS.trash}</button>
+            <button class="btn btn--ghost" data-act="login" data-kind="${a.kind}" data-id="${a.id}" style="padding:.35em .7em" title="Log masuk sebagai pengguna ini">${ICONS.arrowRight} Login as</button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('') : `<tr><td colspan="8" style="text-align:center; padding:var(--sp-4); color:var(--muted)">Tiada pengguna dijumpai.</td></tr>`;
+  }
+
+  // ---- Tindakan (didelegasikan) ----
+  function doLogin(kind, id) {
+    if (kind === 'parent') {
+      const u = getUsers().find(x => x.id === id);
+      if (!confirm(`Log masuk sebagai ibu bapa "${u ? u.name : ''}"?\n\nAnda akan melihat dashboard & saringan mereka. Tindakan ini direkodkan dalam Log Aktiviti.`)) return;
+      startImpersonation(id);
+    } else {
+      const d = getAdmins().find(x => x.id === id);
+      const label = d ? (ROLE_LABEL[d.role] || 'staf') : 'staf';
+      if (!confirm(`Log masuk sebagai ${label} "${d ? d.name : ''}"?\n\nAnda akan melihat panel mereka. Tindakan ini direkodkan dalam Log Aktiviti.`)) return;
+      impersonateStaff(id);
+    }
+  }
+  function doReset(kind, id) {
+    if (kind === 'parent') {
+      const users = getUsers(); const u = users.find(x => x.id === id); if (!u) return;
+      if (!confirm(`Set semula kata laluan untuk "${u.name}" kepada kata laluan sementara?`)) return;
+      u.password = 'demo1234'; saveUsers(users);
+      logAudit('user.reset', `Set semula kata laluan: ${u.name} (${u.email})`);
+      alert(`Kata laluan untuk ${u.name} ditetapkan semula kepada:\n\ndemo1234\n\nMinta pengguna menukarnya selepas log masuk.`);
+    } else {
+      const admins = getAdmins(); const d = admins.find(x => x.id === id); if (!d) return;
+      const label = ROLE_LABEL[d.role] || 'staf';
+      if (!isSuper && d.org !== me.org) { alert('Anda hanya boleh urus staf dalam organisasi anda.'); return; }
+      if (!confirm(`Set semula kata laluan untuk ${label} "${d.name}" kepada kata laluan sementara?`)) return;
+      d.password = 'demo1234'; saveAdmins(admins);
+      logAudit('user.reset', `Set semula kata laluan ${label}: ${d.name} (${d.org})`);
+      alert(`Kata laluan untuk ${d.name} ditetapkan semula kepada:\n\ndemo1234\n\nMinta pengguna menukarnya selepas log masuk.`);
+    }
+  }
+  function doDelete(kind, id) {
+    if (kind === 'parent') {
+      const u = getUsers().find(x => x.id === id); if (!u) return;
+      const kidCount = childrenOf(u.id).length;
+      if (!confirm(`Padam pengguna "${u.name}"?\n\nProfil ${kidCount} anak & semua sejarah saringan mereka turut dipadam. Tindakan ini tidak boleh dibatalkan.`)) return;
+      saveUsers(getUsers().filter(x => x.id !== u.id));
+      saveChildren(getChildren().filter(c => c.userId !== u.id));
+      saveSubmissions(getSubmissions().filter(s => s.userId !== u.id));
+      logAudit('user.delete', `Padam pengguna: ${u.name} (${u.email})`);
+      render();
+    } else {
+      const d = getAdmins().find(x => x.id === id); if (!d) return;
+      const label = ROLE_LABEL[d.role] || 'staf';
+      if (d.id === me.id) { alert('Tidak boleh padam akaun sendiri.'); return; }
+      if (d.role === 'superadmin') { alert('Akaun superadmin dilindungi.'); return; }
+      if (!isSuper && d.org !== me.org) { alert('Anda hanya boleh urus staf dalam organisasi anda.'); return; }
+      if (!confirm(`Padam akaun ${label} "${d.name}" (${d.org})?`)) return;
+      saveAdmins(getAdmins().filter(x => x.id !== d.id));
+      logAudit('account.delete', `Padam ${label}: ${d.name} (${d.org})`);
+      render();
+    }
+  }
+  function openView(kind, id) {
+    if (!viewModal) return;
+    if (kind === 'parent') {
+      const u = getUsers().find(x => x.id === id); if (!u) return;
+      const kids = childrenOf(u.id);
+      const subs = getSubmissions().filter(s => s.userId === u.id);
+      document.getElementById('uv-title').textContent = u.name;
+      document.getElementById('uv-body').innerHTML = `
+        <div style="margin-bottom:var(--sp-3)"><span class="chip">Ibu Bapa</span></div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:var(--sp-3)">
+          <div><span class="muted" style="display:block; font-size:var(--fs-xs)">E-mel</span><strong>${u.email}</strong></div>
+          <div><span class="muted" style="display:block; font-size:var(--fs-xs)">Telefon</span><strong>${u.phone || '-'}</strong></div>
+          <div><span class="muted" style="display:block; font-size:var(--fs-xs)">Didaftar</span><strong>${userCreatedText(u)}</strong></div>
+          <div><span class="muted" style="display:block; font-size:var(--fs-xs)">Bil. Saringan</span><strong>${subs.length}</strong></div>
+        </div>
+        <h4 style="margin:var(--sp-4) 0 var(--sp-2)">Profil Anak (${kids.length})</h4>
+        ${kids.length ? `<ul style="list-style:none; padding:0; margin:0">${kids.map(c => {
+          const mm = ageInMonths(c.dob);
+          const cs = subs.filter(s => s.childId === c.id).length;
+          return `<li class="flex items-center gap-2" style="justify-content:space-between; background:var(--brand-tint); padding:.5em .7em; border-radius:8px; margin-bottom:6px">
+            <span><strong>${c.name}</strong> · <span class="muted">${c.gender} · ${ageText(mm)}</span></span>
+            <span class="chip">${cs} saringan</span></li>`;
+        }).join('')}</ul>` : `<p class="muted">Tiada profil anak.</p>`}`;
+    } else {
+      const d = getAdmins().find(x => x.id === id); if (!d) return;
+      const label = ROLE_LABEL[d.role] || 'staf';
+      document.getElementById('uv-title').textContent = d.name;
+      document.getElementById('uv-body').innerHTML = `
+        <div style="margin-bottom:var(--sp-3)"><span class="chip chip--accent">${label}</span> <span class="chip">${d.org}</span></div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:var(--sp-3)">
+          <div><span class="muted" style="display:block; font-size:var(--fs-xs)">E-mel</span><strong>${d.email}</strong></div>
+          <div><span class="muted" style="display:block; font-size:var(--fs-xs)">Telefon</span><strong>${d.phone || '-'}</strong></div>
+          <div><span class="muted" style="display:block; font-size:var(--fs-xs)">Jawatan</span><strong>${d.jawatan || '-'}</strong></div>
+          <div><span class="muted" style="display:block; font-size:var(--fs-xs)">Organisasi</span><strong>${d.org}</strong></div>
+        </div>
+        <p class="muted" style="font-size:var(--fs-sm); margin-top:var(--sp-3)">Peranan & organisasi staf diurus penuh di tab <strong>Profil &amp; Akaun</strong>.</p>`;
+    }
+    viewModal.classList.add('open');
+  }
+  function openEdit(kind, id) {
+    if (!editModal) return;
+    const rec = kind === 'parent' ? getUsers().find(x => x.id === id) : getAdmins().find(x => x.id === id);
+    if (!rec) return;
+    if (kind !== 'parent' && !isSuper && rec.org !== me.org) { alert('Anda hanya boleh urus staf dalam organisasi anda.'); return; }
+    document.getElementById('ue-kind').value = kind;
+    document.getElementById('ue-id').value = rec.id;
+    document.getElementById('ue-name').value = rec.name || '';
+    document.getElementById('ue-email').value = rec.email || '';
+    document.getElementById('ue-phone').value = rec.phone || '';
+    document.getElementById('ue-h').textContent = kind === 'parent' ? 'Sunting Butiran Pengguna' : `Sunting Butiran ${ROLE_LABEL[rec.role] || 'Staf'}`;
+    editModal.classList.add('open');
+  }
+
+  rows.onclick = (e) => {
+    const b = e.target.closest('[data-act]'); if (!b) return;
+    const { act, kind, id } = b.dataset;
+    if (act === 'login') doLogin(kind, id);
+    else if (act === 'reset') doReset(kind, id);
+    else if (act === 'del') doDelete(kind, id);
+    else if (act === 'view') openView(kind, id);
+    else if (act === 'edit') openEdit(kind, id);
+  };
+
+  document.getElementById('user-edit-form')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const kind = val('ue-kind'), id = val('ue-id'), email = val('ue-email').toLowerCase();
+    if (!val('ue-name') || !email) { alert('Nama dan e-mel diperlukan.'); return; }
+    if (kind === 'parent') {
+      const users = getUsers(); const u = users.find(x => x.id === id); if (!u) return;
+      if (users.some(x => x.id !== id && x.email.toLowerCase() === email)) { alert('E-mel ini sudah digunakan oleh pengguna lain.'); return; }
+      Object.assign(u, { name: val('ue-name'), email, phone: val('ue-phone') });
+      saveUsers(users);
+      logAudit('user.update', `Kemas kini pengguna: ${u.name} (${u.email})`);
+    } else {
+      const admins = getAdmins(); const d = admins.find(x => x.id === id); if (!d) return;
+      const label = ROLE_LABEL[d.role] || 'staf';
+      if (!isSuper && d.org !== me.org) { alert('Anda hanya boleh urus staf dalam organisasi anda.'); return; }
+      if (admins.some(x => x.id !== id && x.email.toLowerCase() === email)) { alert('E-mel ini sudah digunakan oleh akaun lain.'); return; }
+      Object.assign(d, { name: val('ue-name'), email, phone: val('ue-phone') });
+      saveAdmins(admins);
+      logAudit('account.update', `Kemas kini ${label}: ${d.name} (${d.org})`);
+    }
+    editModal.classList.remove('open');
+    render();
+    alert('Butiran dikemas kini.');
+  });
+
+  [['uv-close', viewModal], ['ue-close', editModal], ['ue-cancel', editModal]].forEach(([bid, modal]) => {
+    document.getElementById(bid)?.addEventListener('click', () => modal?.classList.remove('open'));
+  });
+  [viewModal, editModal].forEach(m => m?.addEventListener('click', (e) => { if (e.target === m) m.classList.remove('open'); }));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { viewModal?.classList.remove('open'); editModal?.classList.remove('open'); } });
+
+  searchEl?.addEventListener('input', () => { q = searchEl.value.trim().toLowerCase(); render(); });
+  filterEl?.addEventListener('change', () => { lvl = filterEl.value; render(); });
+  document.getElementById('user-reload')?.addEventListener('click', render);
+  render();
+}
+
+// Butiran jawapan satu sesi (markah domain + senarai soalan & jawapan) — untuk
+// paparan skrin (dikembangkan dalam modal laporan / sejarah).
+function sessionAnswersHTML(s) {
+  const scores = Object.values(s.domains).map(d => {
+    const pct = Math.round(d.achieved / d.total * 100);
+    return `<div class="dscore" style="--dc:${d.color}"><div class="dscore__label"><span class="dot"></span>${d.name}</div><div class="progress-bar"><span style="width:${pct}%"></span></div><div class="dscore__pct tnum">${pct}%</div></div>`;
+  }).join('');
+  const ans = Object.values(s.domains).map(d => {
+    const items = d.items || []; if (!items.length) return '';
+    return `<div style="margin-top:var(--sp-3)"><strong style="color:${d.color}">${d.name}</strong>
+      <ul style="list-style:none; padding:0; margin:6px 0 0; display:grid; gap:6px">${items.map((it, i) => `<li class="flex items-center gap-2" style="justify-content:space-between; background:#fff; border:1px solid var(--line); padding:.5em .7em; border-radius:8px; font-size:var(--fs-sm)"><span>${i + 1}. ${it.text}</span><span class="triage ${it.answer === 'ya' ? 'triage--ok' : 'triage--warn'}">${it.answer === 'ya' ? 'Ya' : 'Tidak'}</span></li>`).join('')}</ul></div>`;
+  }).join('');
+  return `<div class="domain-scores">${scores}</div>${ans || '<p class="muted" style="margin:var(--sp-2) 0 0">Tiada butiran jawapan direkodkan untuk sesi ini.</p>'}`;
+}
+
+// Laporan seorang ibu bapa (paparan skrin) — ringkasan + sejarah saringan
+// setiap anak. Dipapar dalam modal di tab Laporan Pengguna.
+function parentReportScreenHTML(u, kids, subs) {
+  const avg = subs.length ? Math.round(subs.reduce((a, s) => a + s.totalAchieved / s.total, 0) / subs.length * 100) : 0;
+  const childBlocks = kids.length ? kids.map(c => {
+    const cs = subs.filter(s => s.childId === c.id);
+    const m = ageInMonths(c.dob);
+    const rowsH = cs.length ? cs.map(s => {
+      const t = triageOf(s);
+      return `<tr class="${t.row}">
+        <td class="muted" style="white-space:nowrap">${fmtDate(s.submittedAt)}</td>
+        <td>${ageText(s.ageMonths)}</td>
+        <td><strong class="tnum">${s.totalAchieved}/${s.total}</strong> <span class="muted">(${t.pct}%)</span></td>
+        <td><span class="triage ${t.cls}"><span class="tdot"></span>${t.label}</span></td>
+        <td class="col-action"><button class="btn btn--ghost" data-sess="${s.id}" style="padding:.3em .6em" title="Lihat jawapan saringan ini">${ICONS.eye} Jawapan</button></td>
+      </tr>`;
+    }).join('') : `<tr><td colspan="5" class="muted" style="padding:var(--sp-3)">Tiada saringan lagi.</td></tr>`;
+    return `<div style="margin-top:var(--sp-4)">
+      <strong style="font-family:var(--font-head)">${c.name}</strong> <span class="muted">· ${c.gender} · ${ageText(m)} · ${ageGroupLabel(m)}</span>
+      <div class="table-wrap" style="margin-top:6px"><table class="data">
+        <thead><tr><th>Tarikh</th><th>Umur</th><th>Markah</th><th>Triage</th><th></th></tr></thead>
+        <tbody>${rowsH}</tbody></table></div>
+    </div>`;
+  }).join('') : `<p class="muted">Tiada profil anak.</p>`;
+  return `
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:var(--sp-3); margin-bottom:var(--sp-2)">
+      <div><span class="muted" style="display:block; font-size:var(--fs-xs)">E-mel</span><strong>${u.email}</strong></div>
+      <div><span class="muted" style="display:block; font-size:var(--fs-xs)">Telefon</span><strong>${u.phone || '-'}</strong></div>
+      <div><span class="muted" style="display:block; font-size:var(--fs-xs)">Purata Kemahiran</span><strong>${subs.length ? avg + '%' : '—'}</strong></div>
+    </div>
+    <div class="flex gap-2 wrap"><span class="chip">${kids.length} anak</span><span class="chip">${subs.length} saringan</span></div>
+    ${childBlocks}`;
+}
+
+// Versi cetak / PDF (gaya sebaris) laporan seorang ibu bapa.
+function parentReportPrintHTML(u, kids, subs) {
+  const childBlock = kids.length ? kids.map(c => {
+    const cs = subs.filter(s => s.childId === c.id);
+    const m = ageInMonths(c.dob);
+    const rowsHtml = cs.length ? cs.map(s => {
+      const t = triageOf(s);
+      return `<tr>
+        <td style="padding:6px 8px;border:1px solid #d8e2e4;white-space:nowrap">${fmtDate(s.submittedAt)}</td>
+        <td style="padding:6px 8px;border:1px solid #d8e2e4">${ageText(s.ageMonths)}</td>
+        <td style="padding:6px 8px;border:1px solid #d8e2e4"><strong>${s.totalAchieved}/${s.total}</strong> (${t.pct}%)</td>
+        <td style="padding:6px 8px;border:1px solid #d8e2e4"><span style="display:inline-block;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:600;${TRIAGE_STYLE[t.cls]}">${t.label}</span></td>
+      </tr>`;
+    }).join('') : `<tr><td colspan="4" style="padding:8px;border:1px solid #d8e2e4;color:#777">Tiada saringan.</td></tr>`;
+    return `<div style="margin-bottom:14px;break-inside:avoid">
+      <div style="font-weight:700;font-size:13px;margin-bottom:6px">${c.name} <span style="font-weight:400;color:#555">· ${c.gender} · ${ageText(m)}</span></div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px">
+        <thead><tr style="background:#FAEDED">
+          <th style="text-align:left;padding:7px 8px;border:1px solid #d8e2e4">Tarikh</th>
+          <th style="text-align:left;padding:7px 8px;border:1px solid #d8e2e4">Umur</th>
+          <th style="text-align:left;padding:7px 8px;border:1px solid #d8e2e4">Markah</th>
+          <th style="text-align:left;padding:7px 8px;border:1px solid #d8e2e4">Triage</th>
+        </tr></thead>
+        <tbody>${rowsHtml}</tbody>
+      </table>
+    </div>`;
+  }).join('') : `<p style="color:#777">Tiada profil anak.</p>`;
+  return `<div style="font-family:Arial,Helvetica,sans-serif;color:#16303A;width:700px;box-sizing:border-box;padding:8px 4px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #12718A;padding-bottom:10px;margin-bottom:14px">
+      <div><div style="font-size:22px;font-weight:800;color:#12718A;line-height:1.1">e-Jejak Anak</div>
+        <div style="font-size:12px;color:#333">Laporan Pengguna — Ringkasan Saringan</div></div>
+      <div style="text-align:right;font-size:11px;color:#333;white-space:nowrap">USM &middot; MAIK<br>${u.name}</div>
+    </div>
+    <div style="font-size:13px;color:#333;margin-bottom:12px">
+      <strong>${u.name}</strong> &middot; ${u.email} &middot; ${u.phone || '-'}<br>${kids.length} anak &middot; ${subs.length} saringan</div>
+    ${childBlock}
+    <p style="font-size:9px;color:#555;margin-top:16px;border-top:1px solid #ddd;padding-top:8px">
+      Penafian: Keputusan saringan adalah untuk saringan awal sahaja dan bukan diagnosis perubatan.
+      Dijana pada ${new Date().toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' })}.</p>
+  </div>`;
+}
+
 function initReports() {
   const rows = document.getElementById('report-rows');
   if (!rows) return;
@@ -1650,7 +2054,51 @@ function initReports() {
     <td>${r.name}</td><td>${r.email}</td><td>${r.phone}</td>
     <td class="tnum">${r.children}</td><td class="tnum">${r.screenings}</td>
     <td class="tnum">${r.avg}</td><td class="muted" style="white-space:nowrap">${r.last}</td>
-  </tr>`).join('') : `<tr><td colspan="7" style="text-align:center; padding:var(--sp-4); color:var(--muted)">Tiada data pengguna.</td></tr>`;
+    <td class="col-action"><button class="btn btn--ghost" data-report="${r.id}" style="padding:.4em .7em" title="Lihat laporan saringan pengguna ini">${ICONS.eye} Lihat Laporan</button></td>
+  </tr>`).join('') : `<tr><td colspan="8" style="text-align:center; padding:var(--sp-4); color:var(--muted)">Tiada data pengguna.</td></tr>`;
+
+  // Modal laporan pengguna
+  const reportModal = document.getElementById('report-modal');
+  let activeReport = null;
+  function openReport(userId) {
+    const u = getUsers().find(x => x.id === userId); if (!u || !reportModal) return;
+    const kids = childrenOf(u.id);
+    const subs = getSubmissions().filter(s => s.userId === u.id).sort((a, b) => (a.submittedAt < b.submittedAt ? 1 : -1));
+    activeReport = { u, kids, subs };
+    document.getElementById('rp-title').textContent = `Laporan — ${u.name}`;
+    const sub = document.getElementById('rp-sub'); if (sub) sub.textContent = `${u.email} · ${u.phone || '-'}`;
+    document.getElementById('rp-body').innerHTML = parentReportScreenHTML(u, kids, subs);
+    reportModal.classList.add('open');
+  }
+  rows.querySelectorAll('[data-report]').forEach(b => b.addEventListener('click', () => openReport(b.dataset.report)));
+
+  // Kembang/tutup butiran jawapan bagi setiap sesi saringan dalam modal.
+  document.getElementById('rp-body')?.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-sess]'); if (!b) return;
+    const id = b.dataset.sess;
+    const existing = document.getElementById('rpd-' + id);
+    if (existing) { existing.remove(); b.classList.remove('is-active'); return; }
+    const s = getSubmissions().find(x => x.id === id); if (!s) return;
+    const tr = b.closest('tr'); if (!tr) return;
+    const detail = document.createElement('tr');
+    detail.id = 'rpd-' + id;
+    detail.innerHTML = `<td colspan="5" style="background:var(--brand-tint); padding:var(--sp-3)">${sessionAnswersHTML(s)}</td>`;
+    tr.after(detail);
+    b.classList.add('is-active');
+  });
+
+  document.getElementById('rp-close')?.addEventListener('click', () => reportModal?.classList.remove('open'));
+  reportModal?.addEventListener('click', (e) => { if (e.target === reportModal) reportModal.classList.remove('open'); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') reportModal?.classList.remove('open'); });
+  document.getElementById('rp-print')?.addEventListener('click', () => {
+    if (activeReport) printRegion(parentReportPrintHTML(activeReport.u, activeReport.kids, activeReport.subs));
+  });
+  document.getElementById('rp-pdf')?.addEventListener('click', () => {
+    if (!activeReport) return;
+    const slug = activeReport.u.name.replace(/\s+/g, '-').toLowerCase();
+    downloadPDF(parentReportPrintHTML(activeReport.u, activeReport.kids, activeReport.subs), `laporan-${slug}.pdf`);
+    logAudit('report.export', `Muat turun PDF laporan pengguna: ${activeReport.u.name}`);
+  });
 
   document.getElementById('export-csv')?.addEventListener('click', () => {
     const head = ['Nama', 'E-mel', 'Telefon', 'Bil. Anak', 'Bil. Saringan', 'Purata', 'Saringan Terakhir'];
@@ -1884,6 +2332,7 @@ function initAdminAccounts() {
       const isRoot = a.role === 'superadmin';
       const editable = !isRoot && !isSelf;            // guna Profil Saya untuk edit diri
       const canDelete = !isSelf && !isRoot;
+      const canImpersonate = a.id !== me.id && (a.role === 'doctor' || (a.role === 'admin' && isSuper)); // doktor (skop org) atau pentadbir lain (superadmin sahaja)
       const delTitle = isSelf ? 'Edit diri di Profil Saya' : isRoot ? 'Akaun superadmin dilindungi' : 'Padam';
       return `
       <div class="card flex items-center gap-3" style="justify-content:space-between">
@@ -1894,11 +2343,19 @@ function initAdminAccounts() {
           <br><span class="muted" style="font-size:var(--fs-xs)">${a.jawatan || '-'} · ${a.email} · ${a.phone || '-'}</span>
         </div>
         <div class="flex gap-2" style="flex:none">
+          ${canImpersonate ? `<button class="btn btn--ghost" data-imp-doctor="${a.id}" style="padding:.35em .6em" title="Log masuk sebagai doktor ini">${ICONS.eye}</button>` : ''}
           <button class="btn btn--ghost" data-edit-admin="${a.id}" style="padding:.35em .6em"${editable ? '' : ' disabled'} title="${editable ? 'Kemas kini' : (isSelf ? 'Edit diri di Profil Saya' : 'Dilindungi')}">${ICONS.edit}</button>
           <button class="btn btn--ghost" data-del-admin="${a.id}" style="padding:.35em .6em"${canDelete ? '' : ' disabled'} title="${delTitle}">${ICONS.trash}</button>
         </div>
       </div>`;
     }).join('');
+
+    listEl.querySelectorAll('[data-imp-doctor]').forEach(b => b.addEventListener('click', () => {
+      const target = getAdmins().find(x => x.id === b.dataset.impDoctor);
+      const label = target ? (ROLE_LABEL[target.role] || 'staf') : 'staf';
+      if (!confirm(`Log masuk sebagai ${label} "${target ? target.name : ''}"?\n\nAnda akan melihat panel mereka. Tindakan ini direkodkan dalam Log Aktiviti.`)) return;
+      impersonateStaff(b.dataset.impDoctor);
+    }));
     listEl.querySelectorAll('[data-edit-admin]').forEach(b => b.addEventListener('click', () => {
       const target = getAdmins().find(x => x.id === b.dataset.editAdmin);
       if (!target || target.role === 'superadmin' || target.id === me.id) return;
@@ -2064,12 +2521,43 @@ function initHistory() {
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') modal?.classList.remove('open'); });
 }
 
+/* ---------- 18d. IBU BAPA: PROFIL SAYA (tukar kata laluan sahaja) --
+   Pengguna biasa hanya dibenarkan menukar kata laluan. Butiran lain
+   (nama/e-mel/telefon) dipaparkan baca-sahaja. */
+function initProfile() {
+  const form = document.getElementById('password-form');
+  if (!form) return;
+  const user = currentUser();
+  if (!user) return;
+
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = v || ''; };
+  set('pr-name', user.name); set('pr-email', user.email); set('pr-phone', user.phone);
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const cur = val('pw-current'), nw = val('pw-new'), cf = val('pw-confirm');
+    const users = getUsers();
+    const u = users.find(x => x.id === user.id);
+    if (!u) { setMsg('pw-msg', 'Akaun tidak dijumpai. Sila log masuk semula.'); return; }
+    if (u.password && u.password !== cur) { setMsg('pw-msg', 'Kata laluan semasa tidak betul.'); return; }
+    if (nw.length < 6) { setMsg('pw-msg', 'Kata laluan baharu mesti sekurang-kurangnya 6 aksara.'); return; }
+    if (nw !== cf) { setMsg('pw-msg', 'Kata laluan baharu dan pengesahan tidak sepadan.'); return; }
+    if (nw === cur) { setMsg('pw-msg', 'Kata laluan baharu mesti berbeza daripada kata laluan semasa.'); return; }
+    u.password = nw;
+    saveUsers(users);
+    setMsg('pw-msg', '');
+    form.reset();
+    alert('Kata laluan berjaya dikemas kini.');
+  });
+}
+
 /* ---------- 19. INIT ----------------------------------------------- */
 document.addEventListener('DOMContentLoaded', () => {
   ensureSeed();
   if (!guard()) return;      // kawalan akses (parent / admin)
   mountChrome();
   updateAuthUI();
+  renderImpersonationBanner();
   setupRoleAccess();
   initCarousel();
   initTabs();
@@ -2084,7 +2572,9 @@ document.addEventListener('DOMContentLoaded', () => {
   initReports();
   initArticlesAdmin();
   initArticlesPublic();
+  initUsersAdmin();
   initAdminAccounts();
   initAuditLog();
   initHistory();
+  initProfile();
 });

@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=20260727l">
+  <link rel="stylesheet" href="assets/css/style.css?v=20260728h">
 </head>
 <body data-page="admin" data-auth="admin">
 
@@ -46,6 +46,7 @@
         <button class="tab" data-target="tab-statistik" data-roles="superadmin,admin,doctor">Statistik Penggunaan</button>
         <button class="tab" data-target="tab-soalan" data-roles="doctor">Urus Soalan &amp; Domain</button>
         <button class="tab" data-target="tab-artikel" data-roles="superadmin,admin">Urus Artikel</button>
+        <button class="tab" data-target="tab-pengguna" data-roles="superadmin,admin">Urus Pengguna</button>
         <button class="tab" data-target="tab-laporan" data-roles="superadmin,admin">Laporan Pengguna</button>
         <button class="tab" data-target="tab-log" data-roles="superadmin,admin">Log Aktiviti</button>
         <button class="tab" data-target="tab-akaun" data-roles="superadmin,admin,doctor">Profil &amp; Akaun</button>
@@ -210,6 +211,43 @@
         </div>
       </section>
 
+      <!-- ===== TAB: URUS PENGGUNA (ibu bapa) ===== -->
+      <section class="tab-panel" id="tab-pengguna" data-roles="superadmin,admin">
+        <div class="section-head" style="margin-bottom:var(--sp-4)">
+          <h2>Urus Pengguna</h2>
+          <p class="lead" style="font-size:var(--fs-md)">Urus akaun ibu bapa — sunting butiran, lihat profil, set semula kata laluan, padam akaun, atau log masuk sebagai pengguna untuk tujuan sokongan.</p>
+        </div>
+        <div class="grid grid-4" style="margin-bottom:var(--sp-5)">
+          <div class="card"><div class="mini-stat"><b class="tnum" id="us-parents">0</b><span>Jumlah Ibu Bapa</span></div></div>
+          <div class="card"><div class="mini-stat"><b class="tnum" id="us-doctors">0</b><span>Jumlah Doktor</span></div></div>
+          <div class="card"><div class="mini-stat"><b class="tnum" id="us-screenings">0</b><span>Saringan Direkod</span></div></div>
+          <div class="card" style="border-color:color-mix(in srgb, var(--danger) 30%, var(--line))"><div class="mini-stat"><b class="tnum" id="us-referral" style="color:var(--danger)">0</b><span>Perlu Rujukan</span></div></div>
+        </div>
+        <div class="flex gap-3 wrap" style="margin-bottom:var(--sp-3); align-items:end">
+          <div class="field" style="margin:0; flex:1; min-width:220px">
+            <label for="user-search">Cari</label>
+            <input class="input" id="user-search" type="search" placeholder="Nama, e-mel atau telefon…">
+          </div>
+          <div class="field" style="margin:0; min-width:170px">
+            <label for="user-filter">User Level</label>
+            <select class="select" id="user-filter">
+              <option value="semua">Semua Peranan</option>
+              <option value="parent">Ibu Bapa</option>
+              <option value="doctor">Doktor</option>
+              <option value="admin">Pentadbir</option>
+            </select>
+          </div>
+          <button class="btn btn--ghost" id="user-reload" type="button"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg> Muat Semula</button>
+        </div>
+        <p class="muted" id="user-count" style="font-size:var(--fs-sm); margin:0 0 var(--sp-3)"></p>
+        <div class="table-wrap">
+          <table class="data">
+            <thead><tr><th>Didaftar</th><th>Nama</th><th>User Level</th><th>E-mel</th><th>Telefon</th><th>Anak</th><th>Saringan</th><th style="text-align:right">Tindakan</th></tr></thead>
+            <tbody id="user-rows"></tbody>
+          </table>
+        </div>
+      </section>
+
       <!-- ===== TAB 5: LAPORAN PENGGUNA (Modul 6: Jana laporan) ===== -->
       <section class="tab-panel" id="tab-laporan">
         <div class="flex items-center justify-between wrap gap-3" style="margin-bottom:var(--sp-4)">
@@ -220,7 +258,7 @@
         </div>
         <div class="table-wrap">
           <table class="data">
-            <thead><tr><th>Nama</th><th>E-mel</th><th>Telefon</th><th>Bil. Anak</th><th>Bil. Saringan</th><th>Purata</th><th>Saringan Terakhir</th></tr></thead>
+            <thead><tr><th>Nama</th><th>E-mel</th><th>Telefon</th><th>Bil. Anak</th><th>Bil. Saringan</th><th>Purata</th><th>Saringan Terakhir</th><th>Tindakan</th></tr></thead>
             <tbody id="report-rows"></tbody>
           </table>
         </div>
@@ -356,6 +394,61 @@
     </div>
   </div>
 
+  <!-- Modal lihat butiran pengguna -->
+  <div class="modal-overlay" id="user-view-modal" role="dialog" aria-modal="true" aria-labelledby="uv-title">
+    <div class="modal" style="max-width:560px">
+      <div class="modal__head">
+        <div>
+          <h3 id="uv-title">Butiran Pengguna</h3>
+          <p class="muted" style="font-size:var(--fs-sm)">Maklumat akaun ibu bapa</p>
+        </div>
+        <button class="modal__close" id="uv-close" aria-label="Tutup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+      </div>
+      <div class="modal__body" id="uv-body" style="max-height:70vh; overflow:auto"></div>
+    </div>
+  </div>
+
+  <!-- Modal sunting butiran pengguna -->
+  <div class="modal-overlay" id="user-edit-modal" role="dialog" aria-modal="true" aria-labelledby="ue-h">
+    <div class="modal" style="max-width:480px">
+      <div class="modal__head">
+        <div><h3 id="ue-h">Sunting Butiran Pengguna</h3></div>
+        <button class="modal__close" id="ue-close" aria-label="Tutup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+      </div>
+      <div class="modal__body">
+        <form id="user-edit-form">
+          <input type="hidden" id="ue-kind">
+          <input type="hidden" id="ue-id">
+          <div class="field"><label for="ue-name">Nama</label><input class="input" id="ue-name" required></div>
+          <div class="field"><label for="ue-email">E-mel</label><input class="input" type="email" id="ue-email" required></div>
+          <div class="field"><label for="ue-phone">Telefon</label><input class="input" id="ue-phone" placeholder="cth. 0123456789"></div>
+          <div class="flex gap-2">
+            <button class="btn" type="submit"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Simpan Perubahan</button>
+            <button class="btn btn--ghost" type="button" id="ue-cancel">Batal</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal laporan pengguna (Laporan Pengguna → Lihat Laporan) -->
+  <div class="modal-overlay" id="report-modal" role="dialog" aria-modal="true" aria-labelledby="rp-title">
+    <div class="modal" style="max-width:680px">
+      <div class="modal__head">
+        <div>
+          <h3 id="rp-title">Laporan Pengguna</h3>
+          <p class="muted" id="rp-sub" style="font-size:var(--fs-sm)">Ringkasan saringan anak</p>
+        </div>
+        <button class="modal__close" id="rp-close" aria-label="Tutup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+      </div>
+      <div class="modal__body" id="rp-body" style="max-height:64vh; overflow:auto"></div>
+      <div style="padding:var(--sp-3) var(--sp-4); border-top:1px solid var(--line); display:flex; gap:var(--sp-2); justify-content:flex-end; flex-wrap:wrap">
+        <button class="btn btn--ghost" id="rp-print" type="button"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v8H6z"/></svg> Cetak</button>
+        <button class="btn" id="rp-pdf" type="button"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg> Muat Turun PDF</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Footer ringkas panel staf (bukan footer awam ibu bapa) -->
   <footer style="background:var(--brand-deep, #0b3540); color:#cfe0e4; padding:var(--sp-4) 0; margin-top:var(--sp-6)">
     <div class="container flex items-center justify-between wrap gap-3" style="font-size:var(--fs-sm)">
@@ -363,11 +456,13 @@
       <span style="color:#9db6bc">Akses terhad kepada staf yang dibenarkan sahaja.</span>
     </div>
   </footer>
-  <script src="assets/js/main.js?v=20260727l"></script>
+  <script src="assets/js/main.js?v=20260728h"></script>
   <script>
     // Log keluar doktor (kawalan akses dikendalikan oleh guard() dalam main.js)
     document.getElementById('logout').addEventListener('click', function (e) {
       e.preventDefault();
+      // Jika sedang menyamar sebagai doktor, "Log Keluar" bermakna kembali ke sesi asal.
+      if (typeof currentImpersonation === 'function' && currentImpersonation()) { stopImpersonation(); return; }
       sessionStorage.removeItem('ejejak_admin');
       window.location.href = 'admin-login.html';
     });

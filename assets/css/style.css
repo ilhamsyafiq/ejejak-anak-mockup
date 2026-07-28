@@ -951,3 +951,25 @@ table.data td .mini-domains i { width: 22px; height: 6px; border-radius: 3px; di
   body.print-mode > *:not(#print-region) { display: none !important; }
   body.print-mode #print-region { display: block !important; }
 }
+
+/* ---------- Bar penyamaran (admin log masuk sebagai ibu bapa/doktor) ---------- */
+.impersonate-bar {
+  background: #8a4b12; color: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,.18);
+}
+.impersonate-bar__inner {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--sp-3); flex-wrap: wrap;
+  padding-top: .6em; padding-bottom: .6em;
+}
+.impersonate-bar span {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: var(--fs-sm); line-height: 1.35;
+}
+.impersonate-bar strong { font-weight: 700; }
+.impersonate-bar svg { width: 18px; height: 18px; flex: none; }
+.impersonate-bar .btn {
+  flex: none; background: #fff; color: #8a4b12; border-color: #fff;
+}
+.impersonate-bar .btn:hover { background: #ffe9d2; color: #6f3c0e; }
+@media print { .impersonate-bar { display: none !important; } }
