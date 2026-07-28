@@ -3,11 +3,15 @@
 > Fail ini merekod status pembangunan mockup. **Sambung kerja dari bahagian
 > "LANGKAH SETERUSNYA" di bawah.** Kemas kini fail ini setiap kali ada perubahan.
 
-Terakhir dikemas kini: sesi pembangunan (27 Julai 2026) — **logo baharu e-Jejak
-Anak** (pin+perisai+kanak-kanak) + **re-theme warna MAIK** (merah/emas) + **audit
-UX** (skill ui-ux-pro-max: sasaran sentuh 44px, hierarki heading) + **responsif
-mobile menyeluruh** + **footer accordion**. Sebelum ini: sistem 4 peranan
-(superadmin/admin/doctor/parent), Cetak/PDF keputusan & sejarah, carta trend (Canvas).
+Terakhir dikemas kini: sesi pembangunan (28 Julai 2026) — **impersonasi/"Login as"**
+(pentadbir→ibu bapa; superadmin→doktor & pentadbir lain, dgn bar "Mod Penyamaran") +
+**tab Urus Pengguna** (jadual bersatu ibu bapa & staf, lajur User Level, tindakan
+sunting/lihat/reset-kata-laluan/padam/login-as; **borang akaun staf jadi modal** via
+butang *Tambah Akaun Baharu*) + **Laporan Pengguna → "Lihat Laporan"** (modal ringkasan
++ jawapan boleh kembang, cetak/PDF) + **halaman Profil Saya ibu bapa** (`profil.html`,
+tukar kata laluan sahaja) + **baiki butang Log Masuk hilang di mobile**. Cache `?v=`
+kini `20260728j`. Sebelum ini (27 Jul): logo baharu, re-theme MAIK, audit UX, responsif
+mobile, footer accordion; sistem 4 peranan, Cetak/PDF, carta trend (Canvas).
 
 ---
 
@@ -33,6 +37,44 @@ Akses: `http://localhost/ejejak-anak-mockup/`
 
 ## ✅ SIAP SETAKAT INI
 
+### Sesi 28 Julai 2026 — Pengurusan Pengguna & Impersonasi
+- **Impersonasi ("Login as")** — helper `startImpersonation` (ibu bapa) &
+  `impersonateStaff` (doktor/pentadbir) dalam `main.js`. Peraturan:
+  pentadbir & superadmin boleh log masuk sebagai **ibu bapa**; **doktor** boleh
+  disamar oleh superadmin (mana-mana) atau pentadbir (org sendiri); **pentadbir**
+  hanya boleh disamar oleh **superadmin**. Superadmin & akaun sendiri tak boleh
+  disamar. Sesi ibu bapa (`ejejak_user`) ditambah / sesi staf (`ejejak_admin`)
+  ditukar dgn `backupAdmin` disimpan dalam penanda `ejejak_impersonate`.
+  **Bar "Mod Penyamaran"** (`renderImpersonationBanner`, gaya `.impersonate-bar`)
+  papar di semua halaman dgn butang *Tamat & kembali*. Log Keluar semasa menyamar =
+  kembali ke sesi asal. Semua dilog audit (`account.impersonate`/`.end`).
+- **Tab baharu "Urus Pengguna"** (`tab-pengguna`, superadmin/admin) — `initUsersAdmin()`:
+  jadual **bersatu ibu bapa + staf** dgn kad statistik, carian, penapis **User Level**
+  (Ibu Bapa/Doktor/Pentadbir), lajur lencana peranan. Baris ibu bapa: superadmin &
+  admin semua; doktor: skop org untuk admin; pentadbir lain: superadmin sahaja.
+  Tindakan setiap baris: **Sunting · Lihat · Set Semula Kata Laluan · Padam · Login as**
+  (dihala ke stor betul `ejejak_users`/`ejejak_admins`, dgn perlindungan diri/superadmin
+  & skop org). Ikon *set semula* guna ikon **kunci** (bukan simbol jantina lama).
+- **Borang akaun staf → MODAL** (`#staff-modal`, `initStaffForm()`): butang
+  **Tambah Akaun Baharu** (mod cipta) di Urus Pengguna, dan **Sunting** baris staf
+  (mod kemas kini, medan penuh peranan/org/jawatan/kata laluan). Senarai "Urus Akaun
+  Staf" inline lama **dibuang**; fungsinya kini di jadual atas. Jambatan `StaffForm`
+  + `refreshUsersTable` segar semula jadual selepas simpan.
+- **Tab "Profil & Akaun" → "Profil Saya"** — kini profil sendiri sahaja
+  (`initAdminAccounts()` dipangkas kepada borang profil).
+- **Laporan Pengguna → "Lihat Laporan"** (ganti butang impersonate) —
+  `#report-modal`: ringkasan ibu bapa + sejarah saringan setiap anak; setiap sesi
+  boleh **kembang butiran jawapan** (`sessionAnswersHTML`); butang **Cetak** &
+  **Muat Turun PDF** (`parentReportPrintHTML`, guna `printRegion`/`downloadPDF`).
+- **Halaman Profil Saya ibu bapa** (`profil.html`, `initProfile()`) — butiran akaun
+  baca-sahaja + borang **tukar kata laluan sahaja** (sahkan kata laluan semasa,
+  min 6 aksara). Dipaut dari nama pengguna di header (butang `data-when="user"`).
+- **Baiki mobile**: butang **Log Masuk** (tetamu) / **Profil** (log masuk) dulu
+  disembunyi `@media(max-width:760px)` — kini kekal nampak & dipadatkan; ≤480px
+  sembunyi tagline jenama supaya muat sebaris.
+- Fungsi init baharu didaftar dalam `DOMContentLoaded`: `renderImpersonationBanner`,
+  `initUsersAdmin`, `initStaffForm`, `initProfile`.
+
 ### Struktur & Reka Bentuk
 - Template CSS penuh dengan token warna (`assets/css/style.css`) — mudah reskin.
 - **Logo e-Jejak Anak** (`assets/img/logo.png`) — pin lokasi merah + perisai emas
@@ -57,7 +99,7 @@ Akses: `http://localhost/ejejak-anak-mockup/`
   `<details>/<summary>` — tertutup di mobile (footer paling pendek), sentiasa terbuka
   & toggle dimatikan di desktop (`@media min-width:761px`). Struktur di `buildFooter()`.
 - **Cache-busting:** pautan CSS & `<script main.js>` di semua HTML ada `?v=` (kini
-  `20260727l`). **Bump nilai ini setiap kali edit style.css / main.js.**
+  `20260728j`). **Bump nilai ini setiap kali edit style.css / main.js.**
 - Header/footer disuntik dari satu sumber (objek `SITE` dalam `main.js`).
 - Reka bentuk gaya institusi (rujukan USM-MAIK), logo pin e-Jejak Anak, responsif.
 - Header papar status log masuk (nama + Log Keluar) + butang CTA ikut status
@@ -77,7 +119,7 @@ Akses: `http://localhost/ejejak-anak-mockup/`
     USM·MAIK, kromium tapak & butang disembunyikan, warna bar/chip dikekalkan.
 - **M5 Pendidikan**: `pendidikan.html` — Artikel/Tips/Aktiviti/FAQ (dipacu data
   `ejejak_articles`, boleh diurus pentadbir).
-- **M6 Panel Staf** (`admin.html`, 6 tab — **tapisan mengikut peranan**, lihat bawah):
+- **M6 Panel Staf** (`admin.html`, 7 tab — **tapisan mengikut peranan**, lihat bawah):
   1. **Keputusan Saringan** *(doktor)* — triage auto, penapis (cari + Triage + Status),
      **Lihat** (soalan & jawapan), **Hubungi** (Panggilan/WhatsApp/E-mel).
   2. **Statistik Penggunaan** *(semua staf)* — kad ringkasan + **2 carta Canvas**:
@@ -86,13 +128,18 @@ Akses: `http://localhost/ejejak-anak-mockup/`
   3. **Urus Soalan & Domain** *(doktor)* — tambah/padam soalan (ikut kumpulan umur),
      cipta domain, jadual **liputan soalan mengikut umur**, penapis domain & umur.
   4. **Urus Artikel** *(pentadbir/superadmin)* — CRUD artikel + penapis kategori.
-  5. **Laporan Pengguna** *(pentadbir/superadmin)* — jadual + **Muat Turun CSV**.
+  4b. **Urus Pengguna** *(pentadbir/superadmin)* — jadual bersatu **ibu bapa + staf**
+     dgn lajur *User Level* & penapis peranan; tindakan **Sunting/Lihat/Set Semula
+     Kata Laluan/Padam/Login as**. Butang **Tambah Akaun Baharu** buka **modal** borang
+     akaun staf; Sunting baris staf buka modal yang sama (medan penuh peranan/org/dll).
+  5. **Laporan Pengguna** *(pentadbir/superadmin)* — jadual + **Muat Turun CSV**, dan
+     **Lihat Laporan** setiap ibu bapa (modal: ringkasan + sejarah setiap anak,
+     jawapan boleh kembang, **Cetak/PDF**).
   5b. **Log Aktiviti** *(pentadbir/superadmin)* — audit demo: catat log masuk,
-     cipta/padam akaun, hubungi ibu bapa, eksport, tambah soalan/domain/artikel.
-     Pentadbir nampak org sendiri; superadmin nampak semua (`ejejak_audit`).
-  6. **Profil & Akaun** — *Profil Saya* (semua staf) + *Urus Akaun Staf*
-     (pentadbir/superadmin) **cipta / edit / padam** akaun dengan pilihan peranan
-     & organisasi (org dikunci untuk pentadbir).
+     cipta/padam akaun, **impersonasi**, hubungi ibu bapa, eksport, tambah soalan/
+     domain/artikel. Pentadbir nampak org sendiri; superadmin semua (`ejejak_audit`).
+  6. **Profil Saya** — profil sendiri (semua staf). *(Urus Akaun Staf telah dipindah
+     ke tab **Urus Pengguna** sebagai modal.)*
 
 ### Peranan pengguna (4-tier)
 **Penting:** `role` (kuasa) & `org` (USM/MAIK) adalah **bebas** — USM & MAIK
@@ -134,6 +181,10 @@ tab & sub-panel; fungsi render sensitif (klinikal/laporan) juga disemak peranan.
 | `ejejak_submissions` | keputusan saringan (+ jawapan, log hubungi) |
 | `ejejak_audit` | log aktiviti staf (demo audit trail) |
 | Sesi: `ejejak_user`, `ejejak_admin` | pengguna log masuk |
+| Sesi: `ejejak_impersonate` | penanda mod penyamaran (siapa samar siapa + backupAdmin) |
+
+> Nota: `ejejak_users` kini simpan `createdAt` untuk pendaftaran baharu (lajur
+> *Didaftar* di Urus Pengguna; akaun benih lama terbit tarikh dari id bertimestamp).
 
 ---
 
@@ -141,7 +192,7 @@ tab & sub-panel; fungsi render sensitif (klinikal/laporan) juga disemak peranan.
 
 ```
 index.html · login.html · daftar.html · lupa-kata-laluan.html
-dashboard.html · saringan.html · keputusan.html · sejarah.html
+dashboard.html · profil.html · saringan.html · keputusan.html · sejarah.html
 pendidikan.html · admin-login.html · admin.html
 assets/css/style.css · assets/js/main.js
 README.md · progress.md
