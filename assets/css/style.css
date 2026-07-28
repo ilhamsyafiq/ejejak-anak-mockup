@@ -783,7 +783,10 @@ table.data td .mini-domains i { width: 22px; height: 6px; border-radius: 3px; di
 }
 @media (max-width: 760px) {
   :root { --fs-3xl: 2.3rem; --fs-2xl: 2rem; --fs-xl: 1.6rem; }
-  .nav__cta .btn--ghost { display: none; }
+  /* Kekalkan butang Log Masuk / Profil di mobile (jangan sembunyi) — cuma
+     padatkan supaya muat sebaris bersama Daftar & butang menu. */
+  .nav__cta { gap: 6px; }
+  .nav__cta .btn { padding: .5em .7em; font-size: var(--fs-sm); line-height: 1.1; }
   .nav-toggle { display: inline-flex; }
 
   /* Panel doktor/admin: TIADA menu hamburger — pastikan Log Keluar kekal nampak.
@@ -862,6 +865,11 @@ table.data td .mini-domains i { width: 22px; height: 6px; border-radius: 3px; di
   /* Topbar terlalu sesak — sembunyikan hiasan, kekal telefon & e-mel */
   .topbar__meta span:nth-child(3) { display: none; }
   .topbar__social { display: none; }
+
+  /* Header sempit: padatkan butang & sembunyi tagline jenama supaya
+     Log Masuk + Daftar + butang menu muat sebaris. */
+  .nav__cta .btn { padding: .4em .55em; }
+  .brand__tag { display: none; }
 
   /* Butang penuh lebar lebih mudah ditekan */
   .btn--lg { width: 100%; justify-content: center; }
