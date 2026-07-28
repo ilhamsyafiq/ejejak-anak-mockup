@@ -1724,6 +1724,11 @@ function userCreatedText(u) {
   if (m) return fmtDate(new Date(Number(m[1])).toISOString());
   return '—';
 }
+// Jambatan antara jadual Urus Pengguna & modal borang staf (initStaffForm):
+// modal set fungsi buka di sini; jadual daftar fungsi segar semula di sini.
+const StaffForm = { openCreate: null, openEdit: null };
+let refreshUsersTable = null;
+
 function initUsersAdmin() {
   const rows = document.getElementById('user-rows');
   if (!rows) return;
@@ -1915,8 +1920,11 @@ function initUsersAdmin() {
     else if (act === 'reset') doReset(kind, id);
     else if (act === 'del') doDelete(kind, id);
     else if (act === 'view') openView(kind, id);
-    else if (act === 'edit') openEdit(kind, id);
+    else if (act === 'edit') { if (kind === 'parent') openEdit(kind, id); else if (StaffForm.openEdit) StaffForm.openEdit(id); }
   };
+
+  // Butang "Tambah Akaun Baharu" → buka modal borang staf (mod cipta).
+  document.getElementById('add-staff-btn')?.addEventListener('click', () => { if (StaffForm.openCreate) StaffForm.openCreate(); });
 
   document.getElementById('user-edit-form')?.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -1951,6 +1959,7 @@ function initUsersAdmin() {
   searchEl?.addEventListener('input', () => { q = searchEl.value.trim().toLowerCase(); render(); });
   filterEl?.addEventListener('change', () => { lvl = filterEl.value; render(); });
   document.getElementById('user-reload')?.addEventListener('click', render);
+  refreshUsersTable = render; // modal borang staf boleh segar semula jadual selepas simpan
   render();
 }
 
@@ -2248,68 +2257,72 @@ function initArticlesPublic() {
   }
 }
 
-/* ---------- 18b. PENTADBIR: PROFIL & URUS AKAUN DOKTOR ------------- */
+/* ---------- 18b. PENTADBIR: PROFIL SAYA ---------------------------- */
 function initAdminAccounts() {
   const pf = document.getElementById('profile-form');
-  const listEl = document.getElementById('admin-list');
-  if (!pf && !listEl) return;
+  if (!pf) return;
   const me = currentAdmin();
   if (!me) return;
   const role = me.role || 'doctor';
+  document.getElementById('pf-name').value = me.name || '';
+  document.getElementById('pf-email').value = me.email || '';
+  document.getElementById('pf-phone').value = me.phone || '';
+  document.getElementById('pf-jawatan').value = me.jawatan || '';
+  document.getElementById('pf-org').value = me.org || 'USM';
+  pf.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const admins = getAdmins();
+    const a = admins.find(x => x.id === me.id) || admins.find(x => x.email === me.email);
+    const upd = { name: val('pf-name'), phone: val('pf-phone'), jawatan: val('pf-jawatan'), org: val('pf-org') };
+    if (a) { Object.assign(a, upd); saveAdmins(admins); }
+    const ns = { ...me, ...upd };
+    sessionStorage.setItem('ejejak_admin', JSON.stringify(ns));
+    const nameEl = document.getElementById('doctor-name');
+    if (nameEl) nameEl.textContent = `${ns.name} · ${ROLE_LABEL[role] || role}${ns.org ? ' (' + ns.org + ')' : ''}`;
+    alert('Profil dikemas kini.');
+  });
+}
 
-  // --- Profil saya (semua peranan) ---
-  if (pf) {
-    document.getElementById('pf-name').value = me.name || '';
-    document.getElementById('pf-email').value = me.email || '';
-    document.getElementById('pf-phone').value = me.phone || '';
-    document.getElementById('pf-jawatan').value = me.jawatan || '';
-    document.getElementById('pf-org').value = me.org || 'USM';
-    pf.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const admins = getAdmins();
-      const a = admins.find(x => x.id === me.id) || admins.find(x => x.email === me.email);
-      const upd = { name: val('pf-name'), phone: val('pf-phone'), jawatan: val('pf-jawatan'), org: val('pf-org') };
-      if (a) { Object.assign(a, upd); saveAdmins(admins); }
-      const ns = { ...me, ...upd };
-      sessionStorage.setItem('ejejak_admin', JSON.stringify(ns));
-      const nameEl = document.getElementById('doctor-name');
-      if (nameEl) nameEl.textContent = `${ns.name} · ${ROLE_LABEL[role] || role}${ns.org ? ' (' + ns.org + ')' : ''}`;
-      alert('Profil dikemas kini.');
-    });
-  }
-
-  // --- Urus akaun staf: superadmin & admin sahaja ---
-  if (!listEl || !canManageAccounts(role)) return;
-
-  // Skop organisasi: superadmin urus semua; pentadbir hanya org sendiri.
-  const isSuper = role === 'superadmin';
+/* ---------- 18b-2. MODAL AKAUN STAF (cipta / sunting doktor & pentadbir) --
+   Dibuka oleh butang "Tambah Akaun Baharu" (mod cipta) atau tindakan Sunting
+   pada baris staf di jadual Urus Pengguna (mod kemas kini). Skop organisasi:
+   superadmin urus semua; pentadbir org sendiri sahaja. */
+function initStaffForm() {
+  const modal = document.getElementById('staff-modal');
+  const formEl = document.getElementById('admin-form');
+  if (!modal || !formEl) return;
+  const me = currentAdmin();
+  if (!me || !canManageAccounts(me.role)) return;
+  const isSuper = me.role === 'superadmin';
   const myOrg = me.org;
-  let editId = null; // null = mod cipta; jika tidak = mod kemas kini
+  let editId = null; // null = cipta; jika tidak = kemas kini
 
   const adOrg = document.getElementById('ad-org');
   const passInput = document.getElementById('ad-pass');
   const passHint = document.getElementById('ad-pass-hint');
   const formTitle = document.getElementById('admin-form-title');
   const submitBtn = document.getElementById('admin-submit-btn');
-  const cancelBtn = document.getElementById('admin-cancel');
 
-  // Kunci pilihan organisasi kepada org pentadbir (superadmin bebas pilih).
   function lockOrg() { if (adOrg && !isSuper) { adOrg.value = myOrg; adOrg.disabled = true; } }
-  lockOrg();
+  function close() { modal.classList.remove('open'); }
 
-  function endEdit() {
+  function openCreate() {
     editId = null;
-    document.getElementById('admin-form').reset();
+    formEl.reset();
     if (formTitle) formTitle.textContent = 'Tambah Akaun Baharu';
-    if (submitBtn) submitBtn.innerHTML = `<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg> Cipta Akaun`;
-    if (cancelBtn) cancelBtn.style.display = 'none';
+    if (submitBtn) submitBtn.innerHTML = `${ICONS.plus} Cipta Akaun`;
     if (passHint) passHint.style.display = 'none';
     if (passInput) passInput.value = 'demo1234';
-    if (adOrg && isSuper) adOrg.value = 'USM';
+    if (adOrg) { adOrg.disabled = false; if (isSuper) adOrg.value = 'USM'; }
     lockOrg();
+    modal.classList.add('open');
+    setTimeout(() => document.getElementById('ad-name')?.focus(), 40);
   }
-
-  function startEdit(a) {
+  function openEdit(id) {
+    const a = getAdmins().find(x => x.id === id); if (!a) return;
+    if (a.role === 'superadmin') { alert('Akaun superadmin dilindungi.'); return; }
+    if (a.id === me.id) { alert('Sunting akaun anda sendiri di tab Profil Saya.'); return; }
+    if (!isSuper && a.org !== myOrg) { alert('Anda hanya boleh urus akaun dalam organisasi anda.'); return; }
     editId = a.id;
     document.getElementById('ad-role').value = a.role;
     document.getElementById('ad-name').value = a.name || '';
@@ -2321,99 +2334,48 @@ function initAdminAccounts() {
     if (passHint) passHint.style.display = 'block';
     if (formTitle) formTitle.textContent = `Kemas Kini: ${a.name}`;
     if (submitBtn) submitBtn.innerHTML = `${ICONS.check} Kemas Kini`;
-    if (cancelBtn) cancelBtn.style.display = '';
-    document.getElementById('admin-form').scrollIntoView({ behavior: 'smooth' });
+    modal.classList.add('open');
   }
 
-  function render() {
-    const admins = getAdmins().filter(a => isSuper || a.org === myOrg);
-    listEl.innerHTML = admins.map(a => {
-      const isSelf = a.id === me.id;
-      const isRoot = a.role === 'superadmin';
-      const editable = !isRoot && !isSelf;            // guna Profil Saya untuk edit diri
-      const canDelete = !isSelf && !isRoot;
-      const canImpersonate = a.id !== me.id && (a.role === 'doctor' || (a.role === 'admin' && isSuper)); // doktor (skop org) atau pentadbir lain (superadmin sahaja)
-      const delTitle = isSelf ? 'Edit diri di Profil Saya' : isRoot ? 'Akaun superadmin dilindungi' : 'Padam';
-      return `
-      <div class="card flex items-center gap-3" style="justify-content:space-between">
-        <div>
-          <strong style="font-family:var(--font-head)">${a.name}</strong>${isSelf ? ' <span class="chip">Anda</span>' : ''}
-          <span class="chip chip--accent" style="margin-left:4px">${ROLE_LABEL[a.role] || a.role}</span>
-          <span class="chip" style="margin-left:4px">${a.org}</span>
-          <br><span class="muted" style="font-size:var(--fs-xs)">${a.jawatan || '-'} · ${a.email} · ${a.phone || '-'}</span>
-        </div>
-        <div class="flex gap-2" style="flex:none">
-          ${canImpersonate ? `<button class="btn btn--ghost" data-imp-doctor="${a.id}" style="padding:.35em .6em" title="Log masuk sebagai doktor ini">${ICONS.eye}</button>` : ''}
-          <button class="btn btn--ghost" data-edit-admin="${a.id}" style="padding:.35em .6em"${editable ? '' : ' disabled'} title="${editable ? 'Kemas kini' : (isSelf ? 'Edit diri di Profil Saya' : 'Dilindungi')}">${ICONS.edit}</button>
-          <button class="btn btn--ghost" data-del-admin="${a.id}" style="padding:.35em .6em"${canDelete ? '' : ' disabled'} title="${delTitle}">${ICONS.trash}</button>
-        </div>
-      </div>`;
-    }).join('');
-
-    listEl.querySelectorAll('[data-imp-doctor]').forEach(b => b.addEventListener('click', () => {
-      const target = getAdmins().find(x => x.id === b.dataset.impDoctor);
-      const label = target ? (ROLE_LABEL[target.role] || 'staf') : 'staf';
-      if (!confirm(`Log masuk sebagai ${label} "${target ? target.name : ''}"?\n\nAnda akan melihat panel mereka. Tindakan ini direkodkan dalam Log Aktiviti.`)) return;
-      impersonateStaff(b.dataset.impDoctor);
-    }));
-    listEl.querySelectorAll('[data-edit-admin]').forEach(b => b.addEventListener('click', () => {
-      const target = getAdmins().find(x => x.id === b.dataset.editAdmin);
-      if (!target || target.role === 'superadmin' || target.id === me.id) return;
-      if (!isSuper && target.org !== myOrg) { alert('Anda hanya boleh urus akaun dalam organisasi anda.'); return; }
-      startEdit(target);
-    }));
-    listEl.querySelectorAll('[data-del-admin]').forEach(b => b.addEventListener('click', () => {
-      const id = b.dataset.delAdmin;
-      const target = getAdmins().find(x => x.id === id);
-      if (!target || id === me.id || target.role === 'superadmin') return;
-      if (!isSuper && target.org !== myOrg) { alert('Anda hanya boleh urus akaun dalam organisasi anda.'); return; }
-      if (!confirm(`Padam akaun ${ROLE_LABEL[target.role] || ''} "${target.name}"?`)) return;
-      if (editId === id) endEdit();
-      saveAdmins(getAdmins().filter(x => x.id !== id));
-      logAudit('account.delete', `Padam ${ROLE_LABEL[target.role] || target.role}: ${target.name} (${target.org})`);
-      render();
-    }));
-  }
-
-  cancelBtn?.addEventListener('click', endEdit);
-
-  document.getElementById('admin-form')?.addEventListener('submit', (e) => {
+  formEl.addEventListener('submit', (e) => {
     e.preventDefault();
     const email = val('ad-email').toLowerCase();
     const newRole = val('ad-role') || 'doctor';
     if (!['admin', 'doctor'].includes(newRole)) { alert('Peranan tidak sah.'); return; }
-    const newOrg = isSuper ? val('ad-org') : myOrg; // pentadbir dikunci ke org sendiri
+    const newOrg = isSuper ? val('ad-org') : myOrg;
     const newName = val('ad-name');
     const admins = getAdmins();
 
     if (editId) {
-      // --- Mod kemas kini ---
       const a = admins.find(x => x.id === editId);
-      if (!a) { endEdit(); return; }
+      if (!a) { close(); return; }
       if (admins.some(x => x.id !== editId && x.email.toLowerCase() === email)) { alert('E-mel ini sudah digunakan.'); return; }
       const newPass = val('ad-pass');
       Object.assign(a, { name: newName, email, phone: val('ad-phone'), jawatan: val('ad-jawatan'), org: newOrg, role: newRole });
       if (newPass) a.password = newPass; // kosong = kekalkan
       saveAdmins(admins);
       logAudit('account.update', `Kemas kini ${ROLE_LABEL[newRole]}: ${newName} (${newOrg})`);
-      endEdit();
-      render();
+      close(); if (refreshUsersTable) refreshUsersTable();
       alert('Akaun dikemas kini.');
       return;
     }
 
-    // --- Mod cipta ---
     if (admins.some(x => x.email.toLowerCase() === email)) { alert('E-mel ini sudah digunakan.'); return; }
     const prefix = newRole === 'admin' ? 'AD' : 'DR';
     admins.push({ id: prefix + Date.now(), name: newName, email, phone: val('ad-phone'), jawatan: val('ad-jawatan'), org: newOrg, password: val('ad-pass') || 'demo1234', role: newRole });
     saveAdmins(admins);
     logAudit('account.create', `Cipta ${ROLE_LABEL[newRole]}: ${newName} (${newOrg})`);
-    endEdit();
-    render();
+    close(); if (refreshUsersTable) refreshUsersTable();
     alert(`Akaun ${ROLE_LABEL[newRole]} berjaya dicipta.`);
   });
 
-  render();
+  document.getElementById('staff-close')?.addEventListener('click', close);
+  document.getElementById('admin-cancel')?.addEventListener('click', close);
+  modal.addEventListener('click', (e) => { if (e.target === modal) close(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+
+  StaffForm.openCreate = openCreate;
+  StaffForm.openEdit = openEdit;
 }
 
 /* ---------- 18b. LOG AKTIVITI (audit — superadmin & pentadbir) ----- */
@@ -2574,6 +2536,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initArticlesPublic();
   initUsersAdmin();
   initAdminAccounts();
+  initStaffForm();
   initAuditLog();
   initHistory();
   initProfile();

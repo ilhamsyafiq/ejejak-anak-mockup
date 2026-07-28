@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=20260728h">
+  <link rel="stylesheet" href="assets/css/style.css?v=20260728i">
 </head>
 <body data-page="admin" data-auth="admin">
 
@@ -49,7 +49,7 @@
         <button class="tab" data-target="tab-pengguna" data-roles="superadmin,admin">Urus Pengguna</button>
         <button class="tab" data-target="tab-laporan" data-roles="superadmin,admin">Laporan Pengguna</button>
         <button class="tab" data-target="tab-log" data-roles="superadmin,admin">Log Aktiviti</button>
-        <button class="tab" data-target="tab-akaun" data-roles="superadmin,admin,doctor">Profil &amp; Akaun</button>
+        <button class="tab" data-target="tab-akaun" data-roles="superadmin,admin,doctor">Profil Saya</button>
       </div>
 
       <!-- ===== TAB 1: KEPUTUSAN SARINGAN (doktor) ===== -->
@@ -213,9 +213,12 @@
 
       <!-- ===== TAB: URUS PENGGUNA (ibu bapa) ===== -->
       <section class="tab-panel" id="tab-pengguna" data-roles="superadmin,admin">
-        <div class="section-head" style="margin-bottom:var(--sp-4)">
-          <h2>Urus Pengguna</h2>
-          <p class="lead" style="font-size:var(--fs-md)">Urus akaun ibu bapa — sunting butiran, lihat profil, set semula kata laluan, padam akaun, atau log masuk sebagai pengguna untuk tujuan sokongan.</p>
+        <div class="flex items-center justify-between wrap gap-3" style="margin-bottom:var(--sp-4)">
+          <div class="section-head" style="margin:0">
+            <h2>Urus Pengguna</h2>
+            <p class="lead" style="font-size:var(--fs-md)">Urus akaun ibu bapa &amp; staf — sunting, lihat, set semula kata laluan, padam, atau log masuk sebagai pengguna. Cipta akaun staf baharu dengan butang di sebelah.</p>
+          </div>
+          <button class="btn" id="add-staff-btn" type="button" data-manage-accounts><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg> Tambah Akaun Baharu</button>
         </div>
         <div class="grid grid-4" style="margin-bottom:var(--sp-5)">
           <div class="card"><div class="mini-stat"><b class="tnum" id="us-parents">0</b><span>Jumlah Ibu Bapa</span></div></div>
@@ -284,7 +287,7 @@
 
       <!-- ===== TAB 6: PROFIL & AKAUN (profil semua staf + urus akaun ikut peranan) ===== -->
       <section class="tab-panel" id="tab-akaun">
-        <div class="grid grid-2" style="gap:var(--sp-5); align-items:start">
+        <div style="max-width:620px">
 
           <!-- Profil saya -->
           <div>
@@ -303,42 +306,6 @@
                   <select class="select" id="pf-org"><option value="USM">USM</option><option value="MAIK">MAIK</option><option value="Webimpian">Webimpian</option></select>
                 </div>
                 <button class="btn" type="submit">Simpan Profil</button>
-              </form>
-            </div>
-          </div>
-
-          <!-- Urus akaun staf (superadmin & pentadbir sahaja) -->
-          <div data-manage-accounts>
-            <div class="section-head" style="margin-bottom:var(--sp-4)"><h2>Urus Akaun Staf</h2>
-              <p class="lead" style="font-size:var(--fs-md)">Cipta atau padam akaun <strong>Pentadbir</strong> &amp; <strong>Doktor</strong>. Pentadbir hanya nampak &amp; urus akaun dalam <strong>organisasinya</strong>; superadmin urus semua. Staf tidak boleh daftar sendiri (AUTH-05); akaun superadmin dilindungi.</p>
-            </div>
-            <div class="grid" id="admin-list" style="grid-template-columns:1fr; gap:var(--sp-3); margin-bottom:var(--sp-4)"></div>
-            <div class="card">
-              <h3 id="admin-form-title">Tambah Akaun Baharu</h3>
-              <form id="admin-form">
-                <div class="field"><label for="ad-role">Peranan</label>
-                  <select class="select" id="ad-role">
-                    <option value="doctor">Doktor — semak saringan &amp; urus soalan</option>
-                    <option value="admin">Pentadbir — urus akaun &amp; laporan</option>
-                  </select>
-                  <p class="muted" style="font-size:var(--fs-xs); margin:4px 0 0">Pentadbir hanya boleh cipta akaun dalam <strong>organisasinya sendiri</strong> (medan Organisasi dikunci). Superadmin boleh pilih USM/MAIK.</p>
-                </div>
-                <div class="field"><label for="ad-name">Nama</label><input class="input" id="ad-name" placeholder="cth. Dr. Nurul Ain" required></div>
-                <div class="field-row">
-                  <div class="field"><label for="ad-email">E-mel</label><input class="input" type="email" id="ad-email" placeholder="nama@ejejakanak.my" required></div>
-                  <div class="field"><label for="ad-phone">Telefon</label><input class="input" id="ad-phone" placeholder="cth. 04-912 3456"></div>
-                </div>
-                <div class="field-row">
-                  <div class="field"><label for="ad-jawatan">Jawatan</label><input class="input" id="ad-jawatan" placeholder="cth. Pegawai Perubatan"></div>
-                  <div class="field"><label for="ad-org">Organisasi</label>
-                    <select class="select" id="ad-org"><option value="USM">USM</option><option value="MAIK">MAIK</option></select>
-                  </div>
-                </div>
-                <div class="field"><label for="ad-pass">Kata Laluan Sementara</label><input class="input" id="ad-pass" value="demo1234"><span class="muted" id="ad-pass-hint" style="font-size:var(--fs-xs); display:none">Biar kosong untuk kekalkan kata laluan sedia ada.</span></div>
-                <div class="flex gap-2">
-                  <button class="btn" type="submit" id="admin-submit-btn"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg> Cipta Akaun</button>
-                  <button class="btn btn--ghost" type="button" id="admin-cancel" style="display:none">Batal</button>
-                </div>
               </form>
             </div>
           </div>
@@ -449,6 +416,46 @@
     </div>
   </div>
 
+  <!-- Modal tambah / sunting akaun staf (doktor & pentadbir) -->
+  <div class="modal-overlay" id="staff-modal" role="dialog" aria-modal="true" aria-labelledby="admin-form-title">
+    <div class="modal" style="max-width:560px">
+      <div class="modal__head">
+        <div>
+          <h3 id="admin-form-title">Tambah Akaun Baharu</h3>
+          <p class="muted" style="font-size:var(--fs-sm)">Akaun Pentadbir / Doktor. Staf tidak boleh daftar sendiri (AUTH-05).</p>
+        </div>
+        <button class="modal__close" id="staff-close" aria-label="Tutup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+      </div>
+      <div class="modal__body">
+        <form id="admin-form">
+          <div class="field"><label for="ad-role">Peranan</label>
+            <select class="select" id="ad-role">
+              <option value="doctor">Doktor — semak saringan &amp; urus soalan</option>
+              <option value="admin">Pentadbir — urus akaun &amp; laporan</option>
+            </select>
+            <p class="muted" style="font-size:var(--fs-xs); margin:4px 0 0">Pentadbir hanya boleh cipta akaun dalam <strong>organisasinya sendiri</strong> (medan Organisasi dikunci). Superadmin boleh pilih USM/MAIK.</p>
+          </div>
+          <div class="field"><label for="ad-name">Nama</label><input class="input" id="ad-name" placeholder="cth. Dr. Nurul Ain" required></div>
+          <div class="field-row">
+            <div class="field"><label for="ad-email">E-mel</label><input class="input" type="email" id="ad-email" placeholder="nama@ejejakanak.my" required></div>
+            <div class="field"><label for="ad-phone">Telefon</label><input class="input" id="ad-phone" placeholder="cth. 04-912 3456"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label for="ad-jawatan">Jawatan</label><input class="input" id="ad-jawatan" placeholder="cth. Pegawai Perubatan"></div>
+            <div class="field"><label for="ad-org">Organisasi</label>
+              <select class="select" id="ad-org"><option value="USM">USM</option><option value="MAIK">MAIK</option></select>
+            </div>
+          </div>
+          <div class="field"><label for="ad-pass">Kata Laluan Sementara</label><input class="input" id="ad-pass" value="demo1234"><span class="muted" id="ad-pass-hint" style="font-size:var(--fs-xs); display:none">Biar kosong untuk kekalkan kata laluan sedia ada.</span></div>
+          <div class="flex gap-2">
+            <button class="btn" type="submit" id="admin-submit-btn"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg> Cipta Akaun</button>
+            <button class="btn btn--ghost" type="button" id="admin-cancel">Batal</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <!-- Footer ringkas panel staf (bukan footer awam ibu bapa) -->
   <footer style="background:var(--brand-deep, #0b3540); color:#cfe0e4; padding:var(--sp-4) 0; margin-top:var(--sp-6)">
     <div class="container flex items-center justify-between wrap gap-3" style="font-size:var(--fs-sm)">
@@ -456,7 +463,7 @@
       <span style="color:#9db6bc">Akses terhad kepada staf yang dibenarkan sahaja.</span>
     </div>
   </footer>
-  <script src="assets/js/main.js?v=20260728h"></script>
+  <script src="assets/js/main.js?v=20260728i"></script>
   <script>
     // Log keluar doktor (kawalan akses dikendalikan oleh guard() dalam main.js)
     document.getElementById('logout').addEventListener('click', function (e) {
