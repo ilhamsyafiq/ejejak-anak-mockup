@@ -806,6 +806,17 @@ table.data td .mini-domains i { width: 22px; height: 6px; border-radius: 3px; di
   .nav__cta .btn { padding: .5em .7em; font-size: var(--fs-sm); line-height: 1.1; }
   .nav-toggle { display: inline-flex; }
 
+  /* BAIKI: butang Log Masuk bertindih dengan logo di mobile.
+     Punca: jenama (2 logo + teks) + CTA terlalu lebar untuk baris tunggal,
+     jadi CTA melimpah atas logo. Padatkan jenama & kunci CTA supaya tak bertindih. */
+  .nav .container { gap: var(--sp-2); }
+  .brand { min-width: 0; gap: 8px; }               /* benarkan jenama mengecut */
+  .brand__logos { gap: 8px; }
+  .brand__logo--maik { height: 40px; }             /* kecilkan logo institusi */
+  .brand__logo--usm  { height: 30px; }
+  .brand__text { display: none; }                  /* logo cukup kenalkan jenama */
+  .nav__cta { flex: none; }                         /* CTA tak boleh menyerang logo */
+
   /* Panel doktor/admin: TIADA menu hamburger — pastikan Log Keluar kekal nampak.
      Jenama di baris 1; chip nama + Log Keluar turun ke baris 2. */
   body[data-page="admin"] .nav .container { flex-wrap: wrap; row-gap: var(--sp-2); }
