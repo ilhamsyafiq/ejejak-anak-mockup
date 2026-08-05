@@ -191,6 +191,7 @@ function currentAdmin() { try { return JSON.parse(sessionStorage.getItem('ejejak
 const ACTION_LABEL = {
   'login': 'Log masuk', 'account.create': 'Cipta akaun', 'account.update': 'Kemas kini akaun', 'account.delete': 'Padam akaun',
   'account.impersonate': 'Log masuk sebagai ibu bapa', 'account.impersonate.end': 'Tamat penyamaran',
+  'account.password': 'Tukar kata laluan sendiri',
   'user.update': 'Kemas kini pengguna', 'user.reset': 'Set semula kata laluan', 'user.delete': 'Padam pengguna',
   'parent.contact': 'Hubungi ibu bapa', 'report.export': 'Eksport laporan',
   'question.add': 'Tambah soalan', 'domain.create': 'Cipta domain',
@@ -425,7 +426,10 @@ function buildHeader(active) {
   const user = currentUser();
   const brand = `
     <a class="brand" href="index.html" aria-label="e-Jejak Anak — Beranda">
-      <span class="brand__mark"><img src="assets/img/logo.png" alt="Logo e-Jejak Anak"></span>
+      <span class="brand__logos">
+        <img class="brand__logo brand__logo--maik" src="assets/img/logo-maik.png?v=2" alt="Logo MAIK">
+        <img class="brand__logo brand__logo--usm" src="assets/img/logo-usm.png?v=2" alt="Logo USM">
+      </span>
       <span class="brand__text">
         <span class="brand__name">${SITE.name[0]}<b>${SITE.name[1]}</b></span>
         <span class="brand__tag">${SITE.tagline}</span>
@@ -489,7 +493,10 @@ function buildFooter() {
       <div class="footer__grid">
         <div class="footer__brand">
           <a class="brand" href="index.html">
-            <span class="brand__mark"><img src="assets/img/logo.png" alt="Logo e-Jejak Anak"></span>
+            <span class="brand__logos">
+        <img class="brand__logo brand__logo--maik" src="assets/img/logo-maik.png?v=2" alt="Logo MAIK">
+        <img class="brand__logo brand__logo--usm" src="assets/img/logo-usm.png?v=2" alt="Logo USM">
+      </span>
             <span class="brand__text">
               <span class="brand__name">${SITE.name[0]}<b>${SITE.name[1]}</b></span>
               <span class="brand__tag">${SITE.tagline}</span>
@@ -529,7 +536,7 @@ function buildFooter() {
           <summary><h4>Hubungi Kami</h4>${ICONS.chevronDown}</summary>
           <div class="acc-body">
             <ul class="footer__contact">
-              <li>${ICONS.pin} <span>Aras 2, Bangunan Kesihatan Kanak-kanak, 11800 Pulau Pinang</span></li>
+              <li>${ICONS.pin} <span>Tingkat 1, Kota Kenangan, PT 2499, Jalan Hospital, Taman Kenangan, 15200 Kota Bharu, Kelantan</span></li>
               <li>${ICONS.phone} <span>04-653 0000</span></li>
               <li>${ICONS.mail} <span>bantuan@ejejakanak.my</span></li>
             </ul>
@@ -714,19 +721,34 @@ function setMsg(id, text) {
   el.style.display = text ? 'flex' : 'none';
 }
 
+// Normalisasi no. telefon: buang aksara bukan digit; tukar awalan '60' → '0'
+// supaya 0123456789 / 012-3456789 / +60123456789 dianggap sama.
+function normalizePhone(v) {
+  let d = String(v || '').replace(/\D/g, '');
+  if (d.startsWith('60')) d = '0' + d.slice(2);
+  return d;
+}
+
 function initAuthForms() {
   const lf = document.getElementById('login-form');
   if (lf) {
     lf.addEventListener('submit', (e) => {
       e.preventDefault();
-      const email = val('login-email').toLowerCase(), pass = val('login-pass');
-      const u = getUsers().find(x => x.email.toLowerCase() === email);
-      if (!u) { setMsg('login-msg', 'E-mel ini belum berdaftar. Sila daftar akaun dahulu.'); return; }
+      const idRaw = val('login-id').trim(), pass = val('login-pass');
+      const isEmail = idRaw.includes('@');
+      const u = isEmail
+        ? getUsers().find(x => (x.email || '').toLowerCase() === idRaw.toLowerCase())
+        : getUsers().find(x => normalizePhone(x.phone) === normalizePhone(idRaw));
+      if (!u) { setMsg('login-msg', isEmail ? 'E-mel ini belum berdaftar. Sila daftar akaun dahulu.' : 'No. telefon ini belum berdaftar. Sila daftar akaun dahulu.'); return; }
       if (u.password && pass && u.password !== pass) { setMsg('login-msg', 'Kata laluan salah. Sila cuba lagi.'); return; }
       sessionStorage.setItem('ejejak_user', JSON.stringify({ id: u.id, name: u.name, email: u.email, phone: u.phone, role: 'parent' }));
       window.location.href = 'dashboard.html';
     });
   }
+
+  // Butang "Log masuk / Daftar dengan Google" pada login.html & daftar.html
+  const gbtn = document.getElementById('google-login');
+  if (gbtn) gbtn.addEventListener('click', () => openGoogleChooser(loginWithGoogle));
   const af = document.getElementById('admin-login-form');
   if (af) {
     af.addEventListener('submit', (e) => {
@@ -757,6 +779,81 @@ function initAuthForms() {
       window.location.href = 'dashboard.html';
     });
   }
+}
+
+/* ---------- LOG MASUK GOOGLE (SIMULASI MOCKUP) ---------------------
+   PENTING: Ini BUKAN OAuth sebenar. Tiada backend, tiada Client Secret,
+   tiada panggilan ke pelayan Google. Ia hanya MENIRU rupa pemilih akaun
+   Google untuk demo. Dalam sistem Laravel sebenar, butang ini akan
+   redirect ke Laravel Socialite: /auth/google/redirect → /callback.
+------------------------------------------------------------------- */
+const GOOGLE_G_SVG = '<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>';
+
+// Akaun demo yang dipaparkan dalam pemilih. Akaun pertama sepadan dengan
+// pengguna sedia ada (ibu@contoh.com); yang lain akan dicipta bila dipilih.
+const GOOGLE_DEMO_ACCOUNTS = [
+  { name: 'Siti Nurhaliza', email: 'ibu@contoh.com',       avatar: 'S', color: '#DB4437' },
+  { name: 'Nurul Huda',     email: 'nurul.huda@gmail.com', avatar: 'N', color: '#4285F4' },
+];
+
+function openGoogleChooser(onPick) {
+  document.getElementById('g-chooser')?.remove();
+  const rows = GOOGLE_DEMO_ACCOUNTS.map((a, i) => `
+    <button class="g-acct" type="button" data-g="${i}">
+      <span class="g-acct__av" style="background:${a.color}">${a.avatar}</span>
+      <span class="g-acct__meta"><b>${a.name}</b><span>${a.email}</span></span>
+    </button>`).join('');
+  const ov = document.createElement('div');
+  ov.className = 'modal-overlay open';
+  ov.id = 'g-chooser';
+  ov.innerHTML = `
+    <div class="modal" style="max-width:400px" role="dialog" aria-label="Pilih akaun Google">
+      <div class="modal__body">
+        <div style="display:flex; align-items:center; gap:.55em; margin-bottom:var(--sp-2)">
+          <span class="g-logo" style="width:22px; height:22px">${GOOGLE_G_SVG}</span>
+          <strong style="font-family:var(--font-head)">Pilih akaun</strong>
+        </div>
+        <p class="muted" style="font-size:var(--fs-sm); margin:0 0 var(--sp-3)">untuk meneruskan ke <b>e-Jejak Anak</b></p>
+        <div class="g-list">
+          ${rows}
+          <button class="g-acct g-acct--other" type="button" data-g="other">
+            <span class="g-acct__av">+</span>
+            <span class="g-acct__meta"><b>Guna akaun lain</b></span>
+          </button>
+        </div>
+        <p class="g-note">Simulasi demo — tiada log masuk Google sebenar.</p>
+      </div>
+    </div>`;
+  document.body.appendChild(ov);
+  ov.addEventListener('click', (e) => {
+    if (e.target === ov) { ov.remove(); return; }        // klik luar → tutup
+    const btn = e.target.closest('[data-g]');
+    if (!btn) return;
+    const key = btn.dataset.g;
+    ov.remove();
+    if (key === 'other') {
+      const email = (prompt('Masukkan e-mel Google anda:') || '').trim().toLowerCase();
+      if (!email || !email.includes('@')) return;
+      const name = email.split('@')[0].replace(/[._]+/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+      onPick({ name, email });
+    } else {
+      onPick(GOOGLE_DEMO_ACCOUNTS[+key]);
+    }
+  });
+}
+
+function loginWithGoogle(account) {
+  const users = getUsers();
+  let u = users.find(x => (x.email || '').toLowerCase() === account.email.toLowerCase());
+  if (!u) {
+    // Akaun Google baharu → cipta pengguna (tiada kata laluan; telefon dilengkapkan kemudian di profil)
+    u = { id: 'U' + Date.now(), name: account.name, email: account.email, phone: '',
+          role: 'parent', provider: 'google', createdAt: new Date().toISOString() };
+    users.push(u);
+    saveUsers(users);
+  }
+  sessionStorage.setItem('ejejak_user', JSON.stringify({ id: u.id, name: u.name, email: u.email, phone: u.phone, role: 'parent' }));
+  window.location.href = 'dashboard.html';
 }
 
 /* ---------- 10. DASHBOARD IBU BAPA --------------------------------- */
@@ -819,7 +916,7 @@ function initDashboard() {
 
     // Padam anak
     grid.querySelectorAll('[data-del-child]').forEach(btn => btn.addEventListener('click', () => {
-      if (!confirm('Padam profil anak ini? Sejarah saringan berkaitan juga akan dipadam (CHILD-05).')) return;
+      if (!confirm('Padam profil anak ini? Sejarah saringan berkaitan juga akan dipadam.')) return;
       const id = btn.dataset.delChild;
       saveChildren(getChildren().filter(c => c.id !== id));
       saveSubmissions(getSubmissions().filter(s => s.childId !== id));
@@ -1416,7 +1513,7 @@ function sessionReportHTML(heading, subtitle, s) {
     <div class="flex gap-3 wrap" style="margin-bottom:10pt"><span class="chip">Markah ${s.totalAchieved}/${s.total} (${t.pct}%)</span><span class="triage ${t.cls}"><span class="tdot"></span>${t.label}</span></div>
     <div class="domain-scores">${scores}</div>
     ${ans}
-    <p style="font-size:8pt; color:#555; margin-top:14pt; border-top:1px solid #ddd; padding-top:6pt">Penafian: e-Jejak Anak menyediakan saringan awal sahaja dan bukan diagnosis perubatan. Sila rujuk profesional kesihatan bertauliah untuk penilaian lanjut. Dijana pada ${new Date().toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' })}.</p>`;
+    <p style="font-size:8pt; color:#555; margin-top:14pt; border-top:1px solid #ddd; padding-top:6pt">Penafian: Keputusan saringan adalah untuk saringan awal sahaja dan bukan diagnosis perubatan. Setiap sesi kekal muktamad selepas dihantar. Dijana pada ${new Date().toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' })}.</p>`;
 }
 
 // Muat turun HTML sebagai fail PDF sebenar (satu klik) guna html2pdf.js.
@@ -1484,7 +1581,7 @@ function historyReportHTML(child, subInfo, subs) {
       <tbody>${rows}</tbody>
     </table>
     <p style="font-size:9px; color:#555; margin-top:16px; border-top:1px solid #ddd; padding-top:8px">
-      Penafian: Keputusan saringan adalah untuk saringan awal sahaja dan bukan diagnosis perubatan.
+      Penafian: Keputusan saringan adalah untuk saringan awal sahaja dan bukan diagnosis perubatan. Setiap sesi kekal muktamad selepas dihantar.
       Dijana pada ${new Date().toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' })}.</p>
   </div>`;
 }
@@ -2281,6 +2378,28 @@ function initAdminAccounts() {
     if (nameEl) nameEl.textContent = `${ns.name} · ${ROLE_LABEL[role] || role}${ns.org ? ' (' + ns.org + ')' : ''}`;
     alert('Profil dikemas kini.');
   });
+
+  // Tukar kata laluan sendiri (admin / doktor / superadmin)
+  const pwForm = document.getElementById('staff-password-form');
+  if (pwForm) {
+    pwForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const cur = val('spw-current'), nw = val('spw-new'), cf = val('spw-confirm');
+      const admins = getAdmins();
+      const a = admins.find(x => x.id === me.id) || admins.find(x => x.email === me.email);
+      if (!a) { setMsg('spw-msg', 'Akaun tidak dijumpai. Sila log masuk semula.'); return; }
+      if (a.password && a.password !== cur) { setMsg('spw-msg', 'Kata laluan semasa tidak betul.'); return; }
+      if (nw.length < 6) { setMsg('spw-msg', 'Kata laluan baharu mesti sekurang-kurangnya 6 aksara.'); return; }
+      if (nw !== cf) { setMsg('spw-msg', 'Kata laluan baharu dan pengesahan tidak sepadan.'); return; }
+      if (nw === cur) { setMsg('spw-msg', 'Kata laluan baharu mesti berbeza daripada kata laluan semasa.'); return; }
+      a.password = nw;
+      saveAdmins(admins);
+      setMsg('spw-msg', '');
+      pwForm.reset();
+      logAudit('account.password', `Tukar kata laluan sendiri: ${a.name}`);
+      alert('Kata laluan berjaya dikemas kini.');
+    });
+  }
 }
 
 /* ---------- 18b-2. MODAL AKAUN STAF (cipta / sunting doktor & pentadbir) --
@@ -2475,7 +2594,8 @@ function initHistory() {
     }).join('');
     document.getElementById('h-body').innerHTML =
       `<div class="flex gap-3 wrap" style="margin-bottom:var(--sp-3)"><span class="chip">Markah ${s.totalAchieved}/${s.total} (${t.pct}%)</span><span class="triage ${t.cls}"><span class="tdot"></span>${t.label}</span></div>
-       <div class="domain-scores">${scores}</div>${ans}`;
+       <div class="domain-scores">${scores}</div>${ans}
+       <p class="muted" style="font-size:var(--fs-xs); margin-top:var(--sp-4); border-top:1px solid var(--line); padding-top:var(--sp-3)"><strong>Penafian:</strong> Keputusan saringan adalah untuk saringan awal sahaja dan bukan diagnosis perubatan. Setiap sesi kekal muktamad selepas dihantar.</p>`;
     modal.classList.add('open');
   });
   document.getElementById('h-close')?.addEventListener('click', () => modal.classList.remove('open'));

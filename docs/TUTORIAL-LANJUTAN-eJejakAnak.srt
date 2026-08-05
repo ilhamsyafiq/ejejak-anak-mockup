@@ -1,0 +1,132 @@
+1
+00:00:00,001 --> 00:00:05,352
+Tutorial lanjutan e-Jejak Anak — ciri kuasa untuk pentadbir & doktor.
+
+2
+00:00:18,018 --> 00:00:23,535
+Kita log masuk sebagai Pentadbir — urus akaun & saringan dalam organisasi anda.
+
+3
+00:00:23,535 --> 00:00:27,380
+Setiap baris pengguna ada tindakan lanjutan di sebelah kanan.
+
+4
+00:00:27,380 --> 00:00:34,429
+"Login as" membolehkan pentadbir melihat sistem sebagai pengguna itu.
+
+5
+00:00:34,429 --> 00:00:39,101
+Kini kita melihat dashboard ibu bapa itu. Perhatikan bar ungu di atas.
+
+6
+00:00:39,101 --> 00:00:47,851
+Klik "Tamat & kembali" untuk pulang ke akaun pentadbir asal.
+
+7
+00:00:47,851 --> 00:00:55,003
+Pentadbir juga boleh menyamar sebagai doktor dalam organisasinya untuk sokongan.
+
+8
+00:00:55,003 --> 00:01:02,196
+Kini panel dipaparkan sebagai doktor tersebut. Semua tindakan direkod.
+
+9
+00:01:05,570 --> 00:01:10,508
+Butang "Sunting" membuka borang untuk mengemas kini butiran staf.
+
+10
+00:01:10,508 --> 00:01:14,477
+Peranan, organisasi, jawatan & kata laluan boleh dikemas kini di sini.
+
+11
+00:01:14,478 --> 00:01:19,230
+Butang kunci menetapkan semula kata laluan pengguna kepada sementara.
+
+12
+00:01:19,230 --> 00:01:23,084
+Sistem set kata laluan sementara & merekod tindakan dalam log.
+
+13
+00:01:23,084 --> 00:01:36,575
+Mari cipta akaun doktor baharu — staf tidak boleh daftar sendiri.
+
+14
+00:01:36,575 --> 00:01:40,704
+Kata laluan sementara "demo1234" disediakan. Klik "Cipta Akaun".
+
+15
+00:01:40,704 --> 00:01:43,611
+Akaun doktor baharu berjaya ditambah ke senarai pengguna.
+
+16
+00:01:46,839 --> 00:02:05,395
+Pentadbir mengurus kandungan yang dipapar di Pusat Pendidikan.
+
+17
+00:02:05,395 --> 00:02:10,966
+Pilih kategori, isi kandungan & pastikan "Terbitkan" ditanda.
+
+18
+00:02:10,966 --> 00:02:13,894
+Artikel disimpan & terus diterbitkan ke Pusat Pendidikan.
+
+19
+00:02:17,666 --> 00:02:23,516
+Jana laporan setiap pengguna atau muat turun keseluruhan sebagai CSV.
+
+20
+00:02:23,516 --> 00:02:30,507
+Ringkasan saringan pengguna — boleh dicetak atau simpan sebagai PDF.
+
+21
+00:02:30,507 --> 00:02:36,647
+Semua tindakan tadi — impersonasi, set semula, cipta akaun & artikel — direkod di sini.
+
+22
+00:02:51,556 --> 00:03:04,195
+Doktor menyelenggara soalan saringan setiap domain.
+
+23
+00:03:04,195 --> 00:03:09,914
+Taip soalan baharu, pilih kumpulan umur, kemudian klik "Soalan".
+
+24
+00:03:09,914 --> 00:03:12,831
+Soalan baharu terus ditambah ke domain Motor Kasar.
+
+25
+00:03:12,831 --> 00:03:28,951
+Doktor juga boleh mencipta domain perkembangan yang baharu.
+
+26
+00:03:28,951 --> 00:03:35,539
+Beri nama, warna, ikon & senarai soalan — satu baris satu soalan.
+
+27
+00:03:35,540 --> 00:03:38,448
+Domain baharu "Kemahiran Deria" ditambah ke saringan.
+
+28
+00:03:41,368 --> 00:03:46,836
+Bagi kes triage merah, doktor boleh terus menghubungi ibu bapa.
+
+29
+00:03:46,836 --> 00:04:00,185
+Pilih Panggilan, WhatsApp atau E-mel — mesej sudah pra-isi.
+
+30
+00:04:00,185 --> 00:04:05,818
+Tulis nota, kemudian "Tandakan Sudah Dihubungi" untuk simpan.
+
+31
+00:04:05,818 --> 00:04:08,725
+Status bertukar "Dihubungi" & sistem merekod siapa serta bila.
+
+32
+00:04:13,979 --> 00:04:17,587
+Artikel yang ditambah pentadbir tadi kini muncul untuk semua ibu bapa.
+
+33
+00:04:17,848 --> 00:04:22,470
+Itu ciri-ciri lanjutan e-Jejak Anak. Terima kasih kerana menonton.
+

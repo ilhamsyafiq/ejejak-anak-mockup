@@ -1,0 +1,200 @@
+1
+00:00:00,000 --> 00:00:04,980
+Selamat datang ke panduan penggunaan sistem e-Jejak Anak.
+
+2
+00:00:04,980 --> 00:00:09,455
+Ini laman utama e-Jejak Anak — pintu masuk untuk ibu bapa.
+
+3
+00:00:09,456 --> 00:00:14,516
+Sistem menyaring 5 domain: motor kasar, motor halus, bahasa, sosial & kognitif.
+
+4
+00:00:16,765 --> 00:00:19,720
+Pengguna sedia ada log masuk di sini dengan e-mel & kata laluan.
+
+5
+00:00:21,755 --> 00:00:28,237
+Terlupa kata laluan? Masukkan e-mel untuk terima pautan set semula.
+
+6
+00:00:28,237 --> 00:00:30,456
+Pautan set semula akan dihantar ke e-mel anda.
+
+7
+00:00:32,993 --> 00:00:45,032
+Pengguna baharu? Daftar akaun percuma dengan mengisi borang ini.
+
+8
+00:00:45,032 --> 00:00:53,845
+No. telefon wajib — supaya doktor boleh menghubungi anda.
+
+9
+00:00:53,845 --> 00:00:58,302
+Tandakan persetujuan Terma Penggunaan & Dasar Privasi.
+
+10
+00:00:58,302 --> 00:01:05,084
+Setelah lengkap, klik "Cipta Akaun".
+
+11
+00:01:05,084 --> 00:01:08,988
+Akaun berjaya dicipta dan terus log masuk ke dashboard anda.
+
+12
+00:01:08,988 --> 00:01:11,920
+Akaun baharu belum ada profil anak. Mari tambah anak pertama.
+
+13
+00:01:11,920 --> 00:01:19,658
+Isi nama penuh, tarikh lahir & jantina anak.
+
+14
+00:01:19,658 --> 00:01:24,710
+Nama, tarikh lahir & jantina siap. Klik "Simpan Profil".
+
+15
+00:01:24,710 --> 00:01:29,003
+Profil anak berjaya ditambah. Umur dikira automatik.
+
+16
+00:01:29,003 --> 00:01:33,530
+Klik "Mula Saringan" pada kad anak untuk menyaring perkembangannya.
+
+17
+00:01:33,530 --> 00:01:37,399
+Pilih anak & umur diisi automatik. Soalan disesuaikan mengikut umur.
+
+18
+00:01:37,399 --> 00:01:44,451
+Untuk setiap soalan, klik "Ya" atau "Tidak" dengan jujur.
+
+19
+00:01:44,451 --> 00:01:50,798
+Kita isi selebihnya untuk demo — perhatikan kemajuan mengemas kini.
+
+20
+00:01:50,798 --> 00:01:56,663
+Cincin peratus penuh apabila semua dijawab. Klik "Hantar Saringan".
+
+21
+00:01:56,663 --> 00:02:00,985
+Ringkasan markah dipaparkan: dicapai, belum dicapai & jumlah.
+
+22
+00:02:00,985 --> 00:02:05,291
+Skor setiap domain ditunjukkan dengan bar kemajuan berwarna.
+
+23
+00:02:05,291 --> 00:02:09,176
+Sistem mencadangkan artikel & aktiviti berkaitan secara automatik.
+
+24
+00:02:09,177 --> 00:02:13,099
+Keputusan boleh dicetak atau dimuat turun sebagai PDF.
+
+25
+00:02:15,154 --> 00:02:20,548
+Semua saringan lampau anak tersimpan di sini.
+
+26
+00:02:20,548 --> 00:02:23,865
+Skor domain & jawapan setiap soalan sesi itu dipaparkan.
+
+27
+00:02:25,811 --> 00:02:28,725
+Ibu bapa boleh menukar kata laluan di halaman profil.
+
+28
+00:02:31,265 --> 00:02:36,759
+Bahan pendidikan percuma — terbuka tanpa perlu log masuk.
+
+29
+00:02:36,759 --> 00:02:41,525
+Tab "Tips" berisi panduan praktikal untuk ibu bapa.
+
+30
+00:02:41,525 --> 00:02:46,269
+Idea aktiviti untuk merangsang perkembangan anak.
+
+31
+00:02:46,269 --> 00:02:50,749
+Klik soalan untuk kembangkan jawapannya.
+
+32
+00:02:50,749 --> 00:02:52,964
+Jawapan dipaparkan apabila soalan diketuk.
+
+33
+00:02:55,414 --> 00:03:10,440
+Doktor & pentadbir log masuk di panel staf yang berasingan.
+
+34
+00:03:10,440 --> 00:03:13,368
+Doktor melihat semua saringan yang dihantar ibu bapa.
+
+35
+00:03:13,368 --> 00:03:17,335
+Setiap kes dilabel: hijau pemantauan, kuning perhatian, merah perlu rujukan.
+
+36
+00:03:17,335 --> 00:03:22,165
+Boleh tapis mengikut domain, kumpulan umur, triage & status.
+
+37
+00:03:22,165 --> 00:03:27,888
+Skor domain & setiap jawapan dipaparkan untuk penilaian doktor.
+
+38
+00:03:27,888 --> 00:03:31,867
+Pilih Panggilan, WhatsApp atau E-mel dengan mesej pra-isi.
+
+39
+00:03:34,876 --> 00:03:43,309
+Doktor turut memantau statistik & purata pencapaian domain.
+
+40
+00:03:43,309 --> 00:03:48,740
+Doktor boleh tambah/padam soalan & cipta domain baharu.
+
+41
+00:03:48,740 --> 00:03:50,952
+Doktor mengemas kini profilnya sendiri.
+
+42
+00:03:53,478 --> 00:04:09,996
+Pentadbir organisasi seperti MAIK log masuk di sini.
+
+43
+00:04:09,996 --> 00:04:15,761
+Pentadbir memantau penggunaan sistem organisasinya.
+
+44
+00:04:15,761 --> 00:04:21,338
+Tambah, sunting & terbit artikel — terus muncul di Pusat Pendidikan.
+
+45
+00:04:21,338 --> 00:04:26,975
+Senarai bersatu ibu bapa & staf: sunting, set semula kata laluan, padam.
+
+46
+00:04:26,975 --> 00:04:32,915
+Borang modal: nama, e-mel, peranan, organisasi & kata laluan.
+
+47
+00:04:32,915 --> 00:04:37,698
+Jana laporan pengguna & muat turun sebagai CSV.
+
+48
+00:04:37,698 --> 00:04:43,670
+Ringkasan saringan pengguna — boleh dicetak atau simpan PDF.
+
+49
+00:04:43,670 --> 00:04:46,581
+Setiap tindakan sensitif direkod untuk tujuan audit.
+
+50
+00:04:46,860 --> 00:04:51,435
+Itu panduan lengkap penggunaan e-Jejak Anak. Terima kasih kerana menonton.
+
